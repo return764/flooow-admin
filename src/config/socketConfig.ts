@@ -1,5 +1,5 @@
 // @ts-ignore
-import SockJS from 'sockjs-client/dist/sockjs';
+import * as SockJS from 'sockjs-client/dist/sockjs';
 import Stomp, {Frame, Message} from "stompjs";
 
 
