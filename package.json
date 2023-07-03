@@ -1,0 +1,40 @@
+{
+  "name": "flooow",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/colors": "^7.0.0",
+    "@ant-design/icons": "^5.0.1",
+    "@antv/x6": "^2.9.7",
+    "@antv/x6-plugin-dnd": "^2.0.5",
+    "@antv/x6-plugin-minimap": "^2.0.5",
+    "@antv/x6-plugin-scroller": "^2.0.9",
+    "@antv/x6-plugin-selection": "^2.1.7",
+    "@antv/x6-plugin-stencil": "^2.0.3",
+    "@antv/x6-react-shape": "^2.1.2",
+    "@types/lodash": "^4.14.194",
+    "@types/sockjs-client": "^1.5.1",
+    "@types/stompjs": "^2.3.5",
+    "antd": "^5.4.3",
+    "axios": "^1.3.6",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.10.0",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
+  }
+}

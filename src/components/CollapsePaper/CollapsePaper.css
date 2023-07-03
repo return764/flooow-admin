@@ -1,0 +1,28 @@
+.collapse-button {
+}
+
+.collapse-close {
+    transform: rotate(180deg);
+}
+
+.collapse-wrapper {
+    transform: translateX(0px);
+    visibility: visible;
+    transition: transform .3s, visibility .1s ease-in-out;
+}
+
+.collapse-paper-hidden {
+    transform: translateX(-400px);
+    visibility: hidden;
+    transition: transform .3s, visibility .1s ease-in-out .3s;
+}
+
+.collapse-button-portal {
+    transform: rotate(0deg);
+    position: absolute;
+    top: calc(50vh - 16px);
+    cursor: pointer;
+}
+.collapse-button-portal > span {
+    transition: all .3s;
+}
