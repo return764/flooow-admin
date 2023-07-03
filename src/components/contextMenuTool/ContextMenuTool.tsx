@@ -1,12 +1,12 @@
 import React from 'react';
-import {CellView, EdgeView, ToolsView} from "@antv/x6";
+import {Cell, CellView, EdgeView, ToolsView} from "@antv/x6";
 import {Dropdown, MenuProps} from "antd";
 import ReactDOM from "react-dom/client";
-import {createPortal, render, unmountComponentAtNode} from "react-dom";
 
 
 export interface ContextMenuToolOptions extends ToolsView.ToolItem.Options {
     menu: MenuProps['items'],
+    onClick: (cell: Cell) => void
 }
 class ContextMenuTool extends ToolsView.ToolItem<
     EdgeView,
@@ -27,27 +27,30 @@ class ContextMenuTool extends ToolsView.ToolItem<
         return this
     }
 
+    private onClick: MenuProps['onClick'] = () => {
+        this.options.onClick(this.cell);
+    }
+
     private toggleContextMenu(visible: boolean) {
         if (this.hasRender) {
             this.root?.unmount()
             this.hasRender = false
             this.root = ReactDOM.createRoot(this.knob!!)
         }
-        document.removeEventListener('mousedown', this.onMouseDown)
+        document.removeEventListener('click', this.onMouseDown, {capture: false})
 
         if (visible) {
             this.root?.render(
                 <Dropdown
                     open={true}
                     trigger={['contextMenu']}
-                    menu={{items: this.options.menu}}
+                    menu={{items: this.options.menu, onClick: this.onClick}}
                 >
                     <a/>
                 </Dropdown>)
             this.hasRender = true
-            document.addEventListener('mousedown', this.onMouseDown)
+            document.addEventListener('click', this.onMouseDown, {capture: false})
         }
-
     }
 
     private updatePosition(e: MouseEvent) {
@@ -63,6 +66,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
     }
 
     private onMouseDown = (e: MouseEvent) => {
+        e.preventDefault()
         this.updatePosition(e)
         this.toggleContextMenu(false)
     }

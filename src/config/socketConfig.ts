@@ -28,7 +28,7 @@ class Socket {
                 this.client.connect({}, (frame) => {
                     this.isConnected = true
                     resolve(frame)
-                }, (frame) => {
+                }, () => {
                     this.isConnected = false
                     this.retry(resolve, reject)
                 })
@@ -45,7 +45,7 @@ class Socket {
     };
 
     send(destination: string, body?: any, header?: {}) {
-        this.client.send(destination, header, JSON.stringify(body))
+        this.client.send(destination, header, typeof body === 'string' ? body : JSON.stringify(body))
     }
 
     private retry(resolve: { (value: any): void; (arg0: Stomp.Frame | undefined): void; }, reject: (reason?: any) => void) {
@@ -54,7 +54,7 @@ class Socket {
                 this.client.connect({}, (frame) => {
                     this.isConnected = true
                     resolve(frame)
-                }, (frame) => {
+                }, () => {
                     this.isConnected = false
                     if (this.retryCount < 10) {
                         this.retry(resolve, reject)

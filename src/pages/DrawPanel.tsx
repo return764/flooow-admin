@@ -1,9 +1,9 @@
-import React, {RefObject, useEffect, useMemo, useRef, useState} from 'react';
-import {Cell, CellView, EdgeView, Graph, Model, NodeView, Path, Platform} from "@antv/x6";
+import React, { useEffect, useMemo, useRef, useState} from 'react';
+import {Cell, EdgeView, Graph, Model, NodeView, Path, Platform} from "@antv/x6";
 import {register} from "@antv/x6-react-shape";
 import {Scroller} from "@antv/x6-plugin-scroller";
 import Paper from "../components/Paper";
-import {Button, Space} from "antd";
+import {Button, MenuProps, Space} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import { Selection } from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
@@ -204,7 +204,10 @@ const DrawPanel = () => {
         nodes: nodes,
         edges: edges,
     }), [nodes, edges]) as Model.FromJSONData;
-    const menu = [
+    const onClick: (cell: Cell) => void = (cell) => {
+        cell.remove()
+    };
+    const menu: MenuProps['items'] = [
         {
             key: '1',
             label: 'Delete Item',
@@ -227,6 +230,7 @@ const DrawPanel = () => {
                     name: 'contextmenu',
                     args: {
                         menu,
+                        onClick
                     },
                 }
             ]
@@ -235,8 +239,6 @@ const DrawPanel = () => {
 
     useEffect(() => {
         API.graph.retrieveGraph().then((res) => {
-            console.log(res.data)
-            //combineTools
             const nodes = combineTools(res.data.nodes)
             const edges = combineTools(res.data.edges)
             setNodes((prevNodes) => [...prevNodes, ...nodes])
@@ -324,7 +326,7 @@ const DrawPanel = () => {
         graphRef.current!.on('edge:connected', onEdgeConnected)
         graphRef.current!.on('node:move', onNodeMove)
         graphRef.current!.on('node:moved', onNodeMoved)
-        // graphRef.current!.on('cell:contextmenu', onContextMenu)
+        graphRef.current!.on('cell:removed', onCellDelete)
     }, []);
 
     useEffect(() => {
@@ -371,12 +373,19 @@ const DrawPanel = () => {
             name: 'contextmenu',
             args: {
                 menu,
+                onClick
             },
         })
     }
 
-    const onCellDelete = () => {
-        console.log(222)
+    const onCellDelete = (e: Cell.EventArgs['removed']) => {
+        if (e.cell.isNode()) {
+            API.graph.deleteNode(e.cell.id)
+        }
+
+        if (e.cell.isEdge()) {
+            API.graph.deleteEdge(e.cell.id)
+        }
     }
 
     const onExecute = async () => {
