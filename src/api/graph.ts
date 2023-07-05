@@ -16,7 +16,7 @@ export const retrieveGraph = () => {
 
 
 export const retrieveActionOptions = (id: string) => {
-    return axiosInstance.get<ActionOption[]>(`/graph/node/options/${id}`)
+    return axiosInstance.get<ActionOption[]>(`/graph/action/options/${id}`)
 }
 
 export const deleteEdge = (id: string) => {
@@ -38,4 +38,8 @@ export const addNode = (node: any) => {
 }
 export const moveNode = (moveEvent: R.MoveNodeEvent) => {
     socket.send("/app/graph/mock-id/node/move", moveEvent)
+}
+
+export const execute = () => {
+    socket.send("/app/graph/mock-id/execution")
 }

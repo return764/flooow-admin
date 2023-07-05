@@ -388,8 +388,8 @@ const DrawPanel = () => {
         }
     }
 
-    const onExecute = async () => {
-        console.log(graphRef.current?.toJSON())
+    const onExecute = () => {
+        API.graph.execute()
     }
 
     return (
