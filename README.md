@@ -2,13 +2,13 @@ project: flooow
 
 
 ## Process
-- [x] support logic for node&edge deletion
+- [X] support logic for node&edge deletion
 - [ ] showing action running status
 - [ ] support node options form
 - [ ] support multiple graph
 
 ## Refactor
-- [ ] combine Node&Edge creation logic
+- [X] combine Node&Edge creation logic
 
 
 ## Bug

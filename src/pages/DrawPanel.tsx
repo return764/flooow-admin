@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Cell, EdgeView, Graph, Model, NodeView, Path, Platform} from "@antv/x6";
 import {register} from "@antv/x6-react-shape";
 import {Scroller} from "@antv/x6-plugin-scroller";
 import Paper from "../components/Paper";
 import {Button, MenuProps, Space} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
-import { Selection } from "@antv/x6-plugin-selection";
+import {Selection} from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
 import DndContainer from "../components/dndContainer/DndContainer";
 import InputShape from "../shapes/base/InputShape";
@@ -312,17 +312,6 @@ const DrawPanel = () => {
             })
         );
         graphRef.current!.on('cell:added', onCellCreate)
-        graphRef.current!.on("node:added", ({ node }) => {
-            const nodeMetaData = {
-                id: node.id,
-                shape: node.shape,
-                data: node.data,
-                ports: {items: node.ports.items},
-                ...node.size(),
-                ...node.getPosition(),
-            }
-            API.graph.addNode(nodeMetaData)
-        });
         graphRef.current!.on('edge:connected', onEdgeConnected)
         graphRef.current!.on('node:move', onNodeMove)
         graphRef.current!.on('node:moved', onNodeMoved)
@@ -335,18 +324,6 @@ const DrawPanel = () => {
 
     const onCenterContent = () => {
         graphRef.current!.centerContent()
-    }
-
-    const onEdgeConnected = ({isNew, edge}: EdgeView.EventArgs['edge:connected']) => {
-        if (isNew) {
-            const edgeParam = {
-                id: edge.id,
-                shape: edge.shape,
-                source: edge.source,
-                target: edge.target
-            } as R.Edge
-            API.graph.addEdge(edgeParam)
-        }
     }
 
     const onNodeMove = (e: NodeView.EventArgs['node:move']) => {
@@ -368,6 +345,17 @@ const DrawPanel = () => {
         API.graph.moveNode(moveEvent)
     }
 
+    const onEdgeConnected = ({isNew, edge}: EdgeView.EventArgs['edge:connected']) => {
+        if (isNew) {
+            const edgeParam = {
+                id: edge.id,
+                shape: edge.shape,
+                source: edge.source,
+                target: edge.target
+            } as R.Edge
+            API.graph.addEdge(edgeParam)
+        }
+    }
     const onCellCreate = (e: Cell.EventArgs['added']) => {
         e.cell.addTools({
             name: 'contextmenu',
@@ -376,6 +364,18 @@ const DrawPanel = () => {
                 onClick
             },
         })
+        if (e.cell.isNode()) {
+            const node = e.cell
+            const nodeMetaData = {
+                id: node.id,
+                shape: node.shape,
+                data: node.data,
+                ports: {items: node.ports.items},
+                ...node.size(),
+                ...node.getPosition(),
+            }
+            API.graph.addNode(nodeMetaData)
+        }
     }
 
     const onCellDelete = (e: Cell.EventArgs['removed']) => {
