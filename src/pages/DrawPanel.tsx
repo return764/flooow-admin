@@ -18,7 +18,7 @@ import {Edge} from "@antv/x6/src/model/edge";
 import API from "../api";
 import socket from "../config/socketConfig";
 import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
-import {R} from "../api/api";
+import {R} from "../api/model";
 import NodeOptionsContainer from "../components/nodeOptionsContainer/NodeOptionsContainer";
 
 register({

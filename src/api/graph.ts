@@ -1,10 +1,8 @@
-import {R} from "./api";
+import {R} from "./model";
 import axiosInstance from "../config/axiosConfig";
 import socket from "../config/socketConfig";
 
 import ActionTemplate = R.ActionTemplate;
-
-
 import ActionOption = R.ActionOption;
 import GraphData = R.GraphData;
 import ActionOptionForm = R.ActionOptionForm;
@@ -22,9 +20,7 @@ export const retrieveActionOptions = (nodeId: string) => {
 
 
 export const updateActionOptions = (nodeId: string, values: ActionOptionForm) => {
-    return axiosInstance.post<ActionOptionForm>(`/graph/node/${nodeId}/options`, {
-        ...values
-    })
+    return axiosInstance.post<ActionOptionForm>(`/graph/node/${nodeId}/options`, values)
 };
 
 export const deleteEdge = (id: string) => {

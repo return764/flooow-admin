@@ -6,6 +6,7 @@ project: flooow
 - [ ] showing action running status
 - [X] support node options form
 - [ ] support multiple graph
+- [ ] support action options input type
 
 ## Refactor
 - [X] combine Node&Edge creation logic

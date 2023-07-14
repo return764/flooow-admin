@@ -1,10 +1,9 @@
 import React, {FC, useEffect} from 'react';
 import {Graph, Node} from "@antv/x6";
 import './DndContainer.css';
-import CollapsePaper from "../CollapsePaper/CollapsePaper";
+import CollapsePaper from "../collapsePaper/CollapsePaper";
 import {Stencil} from "@antv/x6-plugin-stencil";
 import {RectType} from "../../shapes/interface";
-import Stomp from "stompjs";
 import API from "../../api";
 
 interface DndContainerProps {

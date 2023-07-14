@@ -1,7 +1,8 @@
 import {Node} from "@antv/x6/src/model/node";
+import {Edge} from "@antv/x6/src/model/edge";
 
 
-declare namespace R {
+export namespace R {
 
     export interface ActionTemplate {
         shape: string,
@@ -43,11 +44,22 @@ declare namespace R {
     export interface ActionOption {
         label: string,
         type: string,
+        inputType: OptionInputType,
         value: any
     }
 
     export interface ActionOptionForm {
-        [key: string] : any
+        data : ActionOption[]
+    }
+
+    export enum OptionInputType {
+        DEFAULT = 'DEFAULT',
+        LAST_INPUT = 'LAST_INPUT'
+    }
+
+    export interface UpdateInputType {
+        optionIds: string[],
+        type: OptionInputType
     }
 
 }
