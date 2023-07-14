@@ -36,7 +36,6 @@ const items: MenuItem[] = [
 ];
 
 const App = () => {
-
     return (
         <Routes>
             <Route path='/' element={<AppInner/>}>
@@ -56,7 +55,15 @@ const AppInner = () => {
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <div style={{height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)', lineHeight: '32px', color: gray[0], textAlign: 'center'}}>D6 Demo</div>
+                <div style={{
+                    height: 32,
+                    margin: 16,
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    lineHeight: '32px',
+                    color: gray[0],
+                    textAlign: 'center'
+                }}>D6 Demo
+                </div>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
             </Sider>
             <Layout className="site-layout">

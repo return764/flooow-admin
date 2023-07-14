@@ -11,7 +11,6 @@ import DndContainer from "../components/dndContainer/DndContainer";
 import InputShape from "../shapes/base/InputShape";
 import ProcessShape from "../shapes/base/PorcessShape";
 import OutputShape from "../shapes/base/OutputShape";
-import NodeOptionsContainer from "../components/NodeOptionsContainer/NodeOptionsContainer";
 // @ts-ignore
 import SockJS from 'sockjs-client/dist/sockjs';
 import {Node} from "@antv/x6/src/model/node";
@@ -20,6 +19,7 @@ import API from "../api";
 import socket from "../config/socketConfig";
 import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
 import {R} from "../api/api";
+import NodeOptionsContainer from "../components/nodeOptionsContainer/NodeOptionsContainer";
 
 register({
     shape: 'input',
