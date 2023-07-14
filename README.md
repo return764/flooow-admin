@@ -4,12 +4,14 @@ project: flooow
 ## Process
 - [X] support logic for node&edge deletion
 - [ ] showing action running status
-- [ ] support node options form
+- [X] support node options form
 - [ ] support multiple graph
 
 ## Refactor
 - [X] combine Node&Edge creation logic
+- [ ] refactor DrawPanel component, split register logic to others file
 
 
 ## Bug
 - [ ] fix multiple shape move
+- [ ] fix the socket reconnect logic

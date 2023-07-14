@@ -46,4 +46,8 @@ declare namespace R {
         value: any
     }
 
+    export interface ActionOptionForm {
+        [key: string] : any
+    }
+
 }

@@ -3,21 +3,29 @@ import axiosInstance from "../config/axiosConfig";
 import socket from "../config/socketConfig";
 
 import ActionTemplate = R.ActionTemplate;
+
+
 import ActionOption = R.ActionOption;
 import GraphData = R.GraphData;
+import ActionOptionForm = R.ActionOptionForm;
 export const retrieveAllTemplates = () => {
     return axiosInstance.get<ActionTemplate[]>("/graph/templates")
 }
-
-
 export const retrieveGraph = () => {
     return axiosInstance.get<GraphData>("/graph")
 }
 
 
-export const retrieveActionOptions = (id: string) => {
-    return axiosInstance.get<ActionOption[]>(`/graph/action/options/${id}`)
+export const retrieveActionOptions = (nodeId: string) => {
+    return axiosInstance.get<ActionOption[]>(`/graph/node/${nodeId}/options`)
 }
+
+
+export const updateActionOptions = (nodeId: string, values: ActionOptionForm) => {
+    return axiosInstance.post<ActionOptionForm>(`/graph/node/${nodeId}/options`, {
+        ...values
+    })
+};
 
 export const deleteEdge = (id: string) => {
     socket.send("/app/graph/mock-id/edge/delete", id)
