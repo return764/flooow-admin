@@ -12,7 +12,7 @@ project: flooow
 
 ## Refactor
 - [X] combine Node&Edge creation logic
-- [ ] refactor DrawPanel component, split register logic to others file
+- [X] refactor DrawPanel component, split register logic to others file
 
 
 ## Bug
