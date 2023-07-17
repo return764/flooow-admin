@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Cell, EdgeView, Graph, NodeView, Path, Platform} from "@antv/x6";
-import {register} from "@antv/x6-react-shape";
+import {Cell, EdgeView, Graph, NodeView, Platform} from "@antv/x6";
 import {Scroller} from "@antv/x6-plugin-scroller";
 import Paper from "../../components/Paper";
 import {Button, MenuProps, Space} from "antd";
@@ -8,184 +7,12 @@ import {MiniMap} from "@antv/x6-plugin-minimap";
 import {Selection} from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
 import DndContainer from "../../components/dndContainer/DndContainer";
-import InputShape from "../../shapes/base/InputShape";
-import ProcessShape from "../../shapes/base/PorcessShape";
-import OutputShape from "../../shapes/base/OutputShape";
-// @ts-ignore
-import SockJS from 'sockjs-client/dist/sockjs';
 import API from "../../api";
 import socket from "../../config/socketConfig";
-import ContextMenuTool from "../../components/contextMenuTool/ContextMenuTool";
 import {R} from "../../api/model";
 import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOptionsContainer";
 import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "./GraphContext";
-
-register({
-    shape: 'input',
-    width: 180,
-    height: 36,
-    component: InputShape,
-    ports: {
-        groups: {
-            out: {
-                position: {
-                    name: 'right',
-                },
-                attrs: {
-                    circle: {
-                        r: 4,
-                        magnet: true,
-                        stroke: 'transparent',
-                        strokeWidth: 1,
-                        fill: 'transparent',
-                    },
-                },
-            },
-        },
-    },
-})
-
-register({
-    shape: 'process',
-    width: 180,
-    height: 36,
-    component: ProcessShape,
-    ports: {
-        groups: {
-            in: {
-                position: 'left',
-                attrs: {
-                    circle: {
-                        r: 4,
-                        magnet: true,
-                        stroke: 'transparent',
-                        strokeWidth: 1,
-                        fill: 'transparent',
-                    },
-                },
-            },
-            out: {
-                position: {
-                    name: 'right',
-                },
-                attrs: {
-                    circle: {
-                        r: 4,
-                        magnet: true,
-                        stroke: 'transparent',
-                        strokeWidth: 1,
-                        fill: 'transparent',
-                    },
-                },
-            },
-        },
-    },
-})
-
-register({
-    shape: 'output',
-    width: 180,
-    height: 36,
-    component: OutputShape,
-    ports: {
-        groups: {
-            in: {
-                position: 'left',
-                attrs: {
-                    circle: {
-                        r: 4,
-                        magnet: true,
-                        stroke: 'transparent',
-                        strokeWidth: 1,
-                        fill: 'transparent',
-                    },
-                },
-            }
-        },
-    },
-})
-
-Graph.registerConnector(
-    'curveConnector',
-    (sourcePoint, targetPoint) => {
-        const hgap = Math.abs(targetPoint.x - sourcePoint.x)
-        const path = new Path()
-        path.appendSegment(
-            Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y),
-        )
-        path.appendSegment(
-            Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y),
-        )
-        // 水平三阶贝塞尔曲线
-        path.appendSegment(
-            Path.createSegment(
-                'C',
-                sourcePoint.x < targetPoint.x
-                    ? sourcePoint.x + hgap / 2
-                    : sourcePoint.x - hgap / 2,
-                sourcePoint.y,
-                sourcePoint.x < targetPoint.x
-                    ? targetPoint.x - hgap / 2
-                    : targetPoint.x + hgap / 2,
-                targetPoint.y,
-                targetPoint.x - 6,
-                targetPoint.y,
-            ),
-        )
-        path.appendSegment(
-            Path.createSegment('L', targetPoint.x + 4, targetPoint.y),
-        )
-
-        return path.serialize()
-    },
-    true,
-)
-
-Graph.registerEdge('process-edge', {
-    markup: [
-        {
-            tagName: 'path',
-            selector: 'wrap',
-            attrs: {
-                fill: 'none',
-                cursor: 'pointer',
-                stroke: 'transparent',
-                strokeLinecap: 'round',
-            },
-        },
-        {
-            tagName: 'path',
-            selector: 'line',
-            attrs: {
-                fill: 'none',
-                pointerEvents: 'none',
-            },
-        },
-    ],
-    connector: {
-        name: 'curveConnector',
-    },
-    attrs: {
-        wrap: {
-            connection: true,
-            strokeWidth: 10,
-            strokeLinejoin: 'round',
-        },
-        line: {
-            connection: true,
-            stroke: '#A2B1C3',
-            strokeWidth: 1,
-            targetMarker: {
-                name: 'classic',
-                size: 6,
-            },
-        },
-    },
-})
-
-Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
-Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
@@ -320,6 +147,7 @@ const DrawPanel = () => {
             graphRef.current!.off('node:move', onNodeMove)
             graphRef.current!.off('node:moved', onNodeMoved)
             graphRef.current!.off('cell:removed', onCellDelete)
+            graphRef.current?.disposePlugins(['minimap', 'scroller', 'selection'])
         }
     }, []);
 

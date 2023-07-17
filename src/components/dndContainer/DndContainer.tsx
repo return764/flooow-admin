@@ -72,6 +72,9 @@ const DndContainer: FC<DndContainerProps> = props => {
                 stencil.load(res.data.map(it => graph.createNode(it)))
             }
         })
+        return () => {
+            graph.disposePlugins('stencil')
+        }
     }, [])
 
     return (

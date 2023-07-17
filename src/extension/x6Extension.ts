@@ -1,4 +1,9 @@
-import {Cell,Edge} from "@antv/x6";
+import {Cell, Edge, Graph, Path} from "@antv/x6";
+import {register} from "@antv/x6-react-shape";
+import InputShape from "../shapes/base/InputShape";
+import ProcessShape from "../shapes/base/PorcessShape";
+import OutputShape from "../shapes/base/OutputShape";
+import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
 
 Cell.prototype.toRequestData = function () {
     if (this.isNode()) {
@@ -21,3 +26,169 @@ Cell.prototype.toRequestData = function () {
     }
 
 }
+
+register({
+    shape: 'input',
+    width: 180,
+    height: 36,
+    component: InputShape,
+    ports: {
+        groups: {
+            out: {
+                position: {
+                    name: 'right',
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: 'transparent',
+                        strokeWidth: 1,
+                        fill: 'transparent',
+                    },
+                },
+            },
+        },
+    },
+})
+
+register({
+    shape: 'process',
+    width: 180,
+    height: 36,
+    component: ProcessShape,
+    ports: {
+        groups: {
+            in: {
+                position: 'left',
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: 'transparent',
+                        strokeWidth: 1,
+                        fill: 'transparent',
+                    },
+                },
+            },
+            out: {
+                position: {
+                    name: 'right',
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: 'transparent',
+                        strokeWidth: 1,
+                        fill: 'transparent',
+                    },
+                },
+            },
+        },
+    },
+})
+
+register({
+    shape: 'output',
+    width: 180,
+    height: 36,
+    component: OutputShape,
+    ports: {
+        groups: {
+            in: {
+                position: 'left',
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: 'transparent',
+                        strokeWidth: 1,
+                        fill: 'transparent',
+                    },
+                },
+            }
+        },
+    },
+})
+
+Graph.registerConnector(
+    'curveConnector',
+    (sourcePoint, targetPoint) => {
+        const hgap = Math.abs(targetPoint.x - sourcePoint.x)
+        const path = new Path()
+        path.appendSegment(
+            Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y),
+        )
+        path.appendSegment(
+            Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y),
+        )
+        // 水平三阶贝塞尔曲线
+        path.appendSegment(
+            Path.createSegment(
+                'C',
+                sourcePoint.x < targetPoint.x
+                    ? sourcePoint.x + hgap / 2
+                    : sourcePoint.x - hgap / 2,
+                sourcePoint.y,
+                sourcePoint.x < targetPoint.x
+                    ? targetPoint.x - hgap / 2
+                    : targetPoint.x + hgap / 2,
+                targetPoint.y,
+                targetPoint.x - 6,
+                targetPoint.y,
+            ),
+        )
+        path.appendSegment(
+            Path.createSegment('L', targetPoint.x + 4, targetPoint.y),
+        )
+
+        return path.serialize()
+    },
+    true,
+)
+
+Graph.registerEdge('process-edge', {
+    markup: [
+        {
+            tagName: 'path',
+            selector: 'wrap',
+            attrs: {
+                fill: 'none',
+                cursor: 'pointer',
+                stroke: 'transparent',
+                strokeLinecap: 'round',
+            },
+        },
+        {
+            tagName: 'path',
+            selector: 'line',
+            attrs: {
+                fill: 'none',
+                pointerEvents: 'none',
+            },
+        },
+    ],
+    connector: {
+        name: 'curveConnector',
+    },
+    attrs: {
+        wrap: {
+            connection: true,
+            strokeWidth: 10,
+            strokeLinejoin: 'round',
+        },
+        line: {
+            connection: true,
+            stroke: '#A2B1C3',
+            strokeWidth: 1,
+            targetMarker: {
+                name: 'classic',
+                size: 6,
+            },
+        },
+    },
+})
+
+Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
+Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
