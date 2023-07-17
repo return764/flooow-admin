@@ -1,5 +1,4 @@
-import {Node} from "@antv/x6/src/model/node";
-import {Edge} from "@antv/x6/src/model/edge";
+import {EdgeModel, NodeModel} from "../@types/x6";
 
 
 export namespace R {
@@ -13,24 +12,9 @@ export namespace R {
         }
     }
 
-    export interface Edge {
-        id: string,
-        shape: string,
-        source: {
-            cell: string,
-            port: string
-        },
-        target: {
-            cell: string,
-            port: string
-        },
-        zIndex?: number,
-        [key: string]: any,
-    }
-
     export interface GraphData {
-        nodes: Node.Metadata[]
-        edges: Edge.Metadata[]
+        nodes: NodeModel[],
+        edges: EdgeModel[],
     }
 
     export interface MoveNodeEvent {

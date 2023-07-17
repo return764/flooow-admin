@@ -6,6 +6,7 @@ import ActionTemplate = R.ActionTemplate;
 import ActionOption = R.ActionOption;
 import GraphData = R.GraphData;
 import ActionOptionForm = R.ActionOptionForm;
+import {EdgeModel} from "../@types/x6";
 export const retrieveAllTemplates = () => {
     return axiosInstance.get<ActionTemplate[]>("/graph/templates")
 }
@@ -33,7 +34,7 @@ export const deleteNode = (id: string) => {
 };
 
 
-export const addEdge = (edge: R.Edge) => {
+export const addEdge = (edge: EdgeModel) => {
     socket.send("/app/graph/mock-id/edge/create", edge)
 }
 

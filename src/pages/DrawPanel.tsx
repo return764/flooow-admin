@@ -13,13 +13,12 @@ import ProcessShape from "../shapes/base/PorcessShape";
 import OutputShape from "../shapes/base/OutputShape";
 // @ts-ignore
 import SockJS from 'sockjs-client/dist/sockjs';
-import {Node} from "@antv/x6/src/model/node";
-import {Edge} from "@antv/x6/src/model/edge";
 import API from "../api";
 import socket from "../config/socketConfig";
 import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
 import {R} from "../api/model";
 import NodeOptionsContainer from "../components/nodeOptionsContainer/NodeOptionsContainer";
+import {EdgeModel, NodeModel} from "../@types/x6";
 
 register({
     shape: 'input',
@@ -191,8 +190,8 @@ const baseData = {
     nodes: [],
     edges: [],
 } as {
-    nodes: Node.Metadata[]
-    edges: Edge.Metadata[]
+    nodes: NodeModel[]
+    edges: EdgeModel[]
 };
 
 const DrawPanel = () => {
@@ -223,7 +222,7 @@ const DrawPanel = () => {
             })
     }, [])
 
-    const combineTools = (cells: Edge.Metadata[] | Node.Metadata[]) => {
+    const combineTools = (cells: EdgeModel[] | NodeModel[]) => {
         return cells.map(it => Object.assign({}, it, {
             tools: [
                 {
@@ -347,13 +346,7 @@ const DrawPanel = () => {
 
     const onEdgeConnected = ({isNew, edge}: EdgeView.EventArgs['edge:connected']) => {
         if (isNew) {
-            const edgeParam = {
-                id: edge.id,
-                shape: edge.shape,
-                source: edge.source,
-                target: edge.target
-            } as R.Edge
-            API.graph.addEdge(edgeParam)
+            API.graph.addEdge(edge.toModel())
         }
     }
     const onCellCreate = (e: Cell.EventArgs['added']) => {
@@ -365,16 +358,7 @@ const DrawPanel = () => {
             },
         })
         if (e.cell.isNode()) {
-            const node = e.cell
-            const nodeMetaData = {
-                id: node.id,
-                shape: node.shape,
-                data: node.data,
-                ports: {items: node.ports.items},
-                ...node.size(),
-                ...node.getPosition(),
-            }
-            API.graph.addNode(nodeMetaData)
+            API.graph.addNode(e.cell.toModel())
         }
     }
 

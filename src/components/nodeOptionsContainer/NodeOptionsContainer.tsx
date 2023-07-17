@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import Paper from "../Paper";
-import {Graph} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import {App, Button, Divider, Form, Input, Select} from "antd";
 import './NodeOptionsContainer.css';
 import API from "../../api";
@@ -19,7 +19,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const {graph} = props;
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<R.ActionOption[]>([])
-    const [nodeId, setNodeId] = useState<string>()
+    const [node, setNode] = useState<Node>()
     const {message} = App.useApp()
     const [form] = useForm()
 
@@ -31,7 +31,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
 
     useEffect(() => {
         graph.on('node:click', (pop) => {
-            setNodeId(pop.node.id)
+            setNode(pop.node)
             setOptions([])
             API.graph.retrieveActionOptions(pop.node.id)
                 .then(r => {
@@ -90,7 +90,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
             it.value = formValue[it.label]
             return it
         })
-        API.graph.updateActionOptions(nodeId!!, {data: formOptions})
+        API.graph.updateActionOptions(node?.id!!, {data: formOptions})
             .then(() => message.success("success"))
     }
 
