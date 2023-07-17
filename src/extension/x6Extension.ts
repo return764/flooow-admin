@@ -1,6 +1,6 @@
 import {Cell,Edge} from "@antv/x6";
 
-Cell.prototype.toModel = function () {
+Cell.prototype.toRequestData = function () {
     if (this.isNode()) {
         return {
             id: this.id,

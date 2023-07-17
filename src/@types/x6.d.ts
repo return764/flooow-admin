@@ -3,7 +3,8 @@ import {Edge, Node} from "@antv/x6";
 
 declare module '@antv/x6' {
     interface Cell {
-        toModel() : NodeModel | EdgeModel
+        toRequestData() : NodeModel | EdgeModel
+        name: string
     }
 }
 
