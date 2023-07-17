@@ -51,19 +51,24 @@ class Socket {
     private retry(resolve: { (value: any): void; (arg0: Stomp.Frame | undefined): void; }, reject: (reason?: any) => void) {
         setTimeout(() => {
             if (!this.client.connected) {
+                this.sockJS = new SockJS(this.getFullUrl())
+                this.client = Stomp.over(this.sockJS)
                 this.client.connect({}, (frame) => {
                     this.isConnected = true
                     resolve(frame)
                 }, () => {
                     this.isConnected = false
+                    console.log(`socket retry times ${this.retryCount}`)
                     if (this.retryCount < 10) {
+                        this.retryCount ++
                         this.retry(resolve, reject)
                     } else {
                         this.retryCount = 0
+                        reject(new Error("max retry count reached"))
                     }
                 })
             }
-        }, 1000)
+        }, 5000)
     }
 }
 

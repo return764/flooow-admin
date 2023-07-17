@@ -15,4 +15,4 @@ project: flooow
 
 ## Bug
 - [ ] fix multiple shape move
-- [ ] fix the socket reconnect logic
+- [X] fix the socket reconnect logic
