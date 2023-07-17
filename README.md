@@ -5,6 +5,8 @@ project: flooow
 - [X] support logic for node&edge deletion
 - [ ] showing action running status
 - [X] support node options form
+- [X] add node name
+- [ ] could modify action name
 - [ ] support multiple graph
 - [ ] support action options input type
 

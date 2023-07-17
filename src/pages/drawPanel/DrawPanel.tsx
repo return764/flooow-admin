@@ -1,24 +1,25 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Cell, EdgeView, Graph, Model, NodeView, Path, Platform} from "@antv/x6";
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {Cell, EdgeView, Graph, NodeView, Path, Platform} from "@antv/x6";
 import {register} from "@antv/x6-react-shape";
 import {Scroller} from "@antv/x6-plugin-scroller";
-import Paper from "../components/Paper";
+import Paper from "../../components/Paper";
 import {Button, MenuProps, Space} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {Selection} from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
-import DndContainer from "../components/dndContainer/DndContainer";
-import InputShape from "../shapes/base/InputShape";
-import ProcessShape from "../shapes/base/PorcessShape";
-import OutputShape from "../shapes/base/OutputShape";
+import DndContainer from "../../components/dndContainer/DndContainer";
+import InputShape from "../../shapes/base/InputShape";
+import ProcessShape from "../../shapes/base/PorcessShape";
+import OutputShape from "../../shapes/base/OutputShape";
 // @ts-ignore
 import SockJS from 'sockjs-client/dist/sockjs';
-import API from "../api";
-import socket from "../config/socketConfig";
-import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
-import {R} from "../api/model";
-import NodeOptionsContainer from "../components/nodeOptionsContainer/NodeOptionsContainer";
-import {EdgeModel, NodeModel} from "../@types/x6";
+import API from "../../api";
+import socket from "../../config/socketConfig";
+import ContextMenuTool from "../../components/contextMenuTool/ContextMenuTool";
+import {R} from "../../api/model";
+import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOptionsContainer";
+import {EdgeModel, NodeModel} from "../../@types/x6";
+import {GraphContext} from "./GraphContext";
 
 register({
     shape: 'input',
@@ -186,23 +187,11 @@ Graph.registerEdge('process-edge', {
 Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
 Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
 
-const baseData = {
-    nodes: [],
-    edges: [],
-} as {
-    nodes: NodeModel[]
-    edges: EdgeModel[]
-};
-
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
-    const [nodes, setNodes] = useState(baseData.nodes);
-    const [edges, setEdges] = useState(baseData.edges);
-    const graphData = useMemo(() => ({
-        nodes: nodes,
-        edges: edges,
-    }), [nodes, edges]) as Model.FromJSONData;
+    const {initGraphData, addNodeModel} = useContext(GraphContext);
+
     const onClick: (cell: Cell) => void = (cell) => {
         cell.remove()
     };
@@ -218,6 +207,15 @@ const DrawPanel = () => {
             .then(() => {
                 socket.subscribe("/queue/graph/mock-id", (res) => {
                     console.log("response", res)
+                    const jsonBody = JSON.parse(res.body)
+                    // @ts-ignore
+                    switch (res.headers["return-type"]) {
+                         case "CREATE_NODE":
+                             addNodeModel(jsonBody)
+                             break;
+                        default:
+                             break;
+                    }
                 })
             })
     }, [])
@@ -240,8 +238,9 @@ const DrawPanel = () => {
         API.graph.retrieveGraph().then((res) => {
             const nodes = combineTools(res.data.nodes)
             const edges = combineTools(res.data.edges)
-            setNodes((prevNodes) => [...prevNodes, ...nodes])
-            setEdges((prevEdges) => [...prevEdges, ...edges])
+            const graphData = {nodes, edges};
+            initGraphData(graphData)
+            graphRef.current!.fromJSON(graphData);
         })
     }, [])
 
@@ -315,11 +314,14 @@ const DrawPanel = () => {
         graphRef.current!.on('node:move', onNodeMove)
         graphRef.current!.on('node:moved', onNodeMoved)
         graphRef.current!.on('cell:removed', onCellDelete)
+        return () => {
+            graphRef.current!.off('cell:added', onCellCreate)
+            graphRef.current!.off('edge:connected', onEdgeConnected)
+            graphRef.current!.off('node:move', onNodeMove)
+            graphRef.current!.off('node:moved', onNodeMoved)
+            graphRef.current!.off('cell:removed', onCellDelete)
+        }
     }, []);
-
-    useEffect(() => {
-        graphRef.current!.fromJSON(graphData);
-    }, [graphData])
 
     const onCenterContent = () => {
         graphRef.current!.centerContent()
@@ -346,7 +348,7 @@ const DrawPanel = () => {
 
     const onEdgeConnected = ({isNew, edge}: EdgeView.EventArgs['edge:connected']) => {
         if (isNew) {
-            API.graph.addEdge(edge.toModel())
+            API.graph.addEdge(edge.toRequestData())
         }
     }
     const onCellCreate = (e: Cell.EventArgs['added']) => {
@@ -358,7 +360,7 @@ const DrawPanel = () => {
             },
         })
         if (e.cell.isNode()) {
-            API.graph.addNode(e.cell.toModel())
+            API.graph.addNode(e.cell.toRequestData())
         }
     }
 
@@ -394,7 +396,6 @@ const DrawPanel = () => {
                 right:'20px',
                 bottom: '20px',
             }}/>
-
         </>
     )
 };

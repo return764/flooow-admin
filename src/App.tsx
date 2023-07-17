@@ -7,9 +7,10 @@ import {
     PieChartOutlined,
     TeamOutlined,
 } from '@ant-design/icons';
-import DrawPanel from "./pages/DrawPanel";
+import DrawPanel from "./pages/drawPanel/DrawPanel";
 import {gray} from "@ant-design/colors";
 import Dashboard from "./pages/app/Dashboard";
+import GraphContextProvider from "./pages/drawPanel/GraphContextProvider";
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -41,7 +42,7 @@ const App = () => {
             <Route path='/' element={<AppInner/>}>
                 <Route path='/' element={<Dashboard/>}/>
             </Route>
-            <Route path='/draw' element={<DrawPanel/>}/>
+            <Route path='/draw' element={<GraphContextProvider><DrawPanel/></GraphContextProvider>}/>
         </Routes>
     )
 };

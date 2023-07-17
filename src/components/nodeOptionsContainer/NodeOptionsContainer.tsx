@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import Paper from "../Paper";
-import {Graph, Node} from "@antv/x6";
+import {Graph, NodeView} from "@antv/x6";
 import {App, Button, Divider, Form, Input, Select} from "antd";
 import './NodeOptionsContainer.css';
 import API from "../../api";
@@ -10,6 +10,8 @@ import {useForm} from "antd/es/form/Form";
 import {DragDropContext, Draggable, Droppable, OnDragEndResponder} from 'react-beautiful-dnd';
 import {clone, isEmpty} from "lodash";
 import OptionInputType = R.OptionInputType;
+import {NodeModel} from "../../@types/x6";
+import {GraphContext} from "../../pages/drawPanel/GraphContext";
 
 type NodeOptionsContainerProps = {
     graph: Graph
@@ -19,7 +21,8 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const {graph} = props;
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<R.ActionOption[]>([])
-    const [node, setNode] = useState<Node>()
+    const [nodeModel, setNodeModel] = useState<NodeModel>()
+    const {getNodeModelById} = useContext(GraphContext)
     const {message} = App.useApp()
     const [form] = useForm()
 
@@ -30,19 +33,27 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     }, {}), [options])
 
     useEffect(() => {
-        graph.on('node:click', (pop) => {
-            setNode(pop.node)
-            setOptions([])
-            API.graph.retrieveActionOptions(pop.node.id)
-                .then(r => {
-                    setOptions(r.data)
-                    setOpen(true)
-                })
-        })
-        graph.on('blank:click', () => {
-            setOpen(false);
-        })
-    }, [])
+        graph.on('node:click', openOptionsDrawer)
+        graph.on('blank:click', closeOptionsDrawer)
+        return () => {
+            graph.off('node:click', openOptionsDrawer)
+            graph.off('blank:click', closeOptionsDrawer)
+        }
+    }, [getNodeModelById])
+
+    const openOptionsDrawer = useCallback((pop: NodeView.EventArgs['node:click']) => {
+        setNodeModel(getNodeModelById(pop.node.id))
+        setOptions([])
+        API.graph.retrieveActionOptions(pop.node.id)
+            .then(r => {
+                setOptions(r.data)
+                setOpen(true)
+            })
+    }, [getNodeModelById]);
+    const closeOptionsDrawer = () => {
+        setOpen(false);
+    };
+
 
     const renderDefaultOptions = () => {
         return defaultOptions.map((it, index) => {
@@ -90,7 +101,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
             it.value = formValue[it.label]
             return it
         })
-        API.graph.updateActionOptions(node?.id!!, {data: formOptions})
+        API.graph.updateActionOptions(nodeModel?.id!!, {data: formOptions})
             .then(() => message.success("success"))
     }
 
@@ -116,6 +127,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
         <Paper id='node-options-container'
                hidden={!open}
         >
+            <p>{nodeModel?.name}</p>
             <DragDropContext onDragEnd={handleDragEnd}>
                 {(!isEmpty(options) || !isEmpty(inputOptions)) && <Form
                   labelCol={{span: 8}}
