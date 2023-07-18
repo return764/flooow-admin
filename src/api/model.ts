@@ -38,7 +38,7 @@ export namespace R {
 
     export enum OptionInputType {
         DEFAULT = 'DEFAULT',
-        LAST_INPUT = 'LAST_INPUT'
+        LAST_OUTPUT = 'LAST_OUTPUT'
     }
 
     export interface UpdateInputType {
