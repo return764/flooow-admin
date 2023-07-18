@@ -31,7 +31,10 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const inputOptions = useMemo(() => options.filter(it => it.inputType === OptionInputType.LAST_OUTPUT), [options])
     const defaultOptions = useMemo(() => options.filter(it => it.inputType === OptionInputType.DEFAULT), [options])
     const initialValue = useMemo(() => options?.reduce((previous, current) => {
-        return Object.assign({}, previous, {[current.label]: current.value})
+        return {
+            ...previous,
+            [current.label]: current.value
+        }
     }, {}), [options])
 
     useEffect(() => {
@@ -64,8 +67,9 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     };
 
     useEffect(() => {
+        console.log(1)
         form.setFieldsValue(initialValue)
-    }, [form, initialValue])
+    }, [form])
 
     const renderDefaultOptions = () => {
         return defaultOptions.map((it, index) => {
@@ -130,19 +134,20 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     }
 
     const handleDragEnd: OnDragEndResponder = (result) => {
-        if (result.destination?.droppableId === 'input-from') {
+        const {source, destination} = result
+        if (source.droppableId === 'basic' && destination?.droppableId === 'input-from') {
             setOptions((_) => {
                 const arr = clone(defaultOptions)
-                arr[result.source.index].inputType = OptionInputType.LAST_OUTPUT
-                form.setFieldValue(arr[result.source.index].label, selectOptions[0]?.value ?? null)
+                arr[source.index].inputType = OptionInputType.LAST_OUTPUT
+                form.setFieldValue(arr[source.index].label, selectOptions[0]?.value ?? '')
                 return [...arr, ...inputOptions]
             })
         }
-        if (result.destination?.droppableId === 'basic') {
+        if (source.droppableId === 'input-from' && destination?.droppableId === 'basic') {
             setOptions((_) => {
                 const arr = clone(inputOptions)
-                arr[result.source.index].inputType = OptionInputType.DEFAULT
-                form.setFieldValue(arr[result.source.index].label, null)
+                arr[source.index].inputType = OptionInputType.DEFAULT
+                form.setFieldValue(arr[source.index].label, '')
                 return [...arr, ...defaultOptions]
             })
         }
