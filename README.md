@@ -8,7 +8,7 @@ project: flooow
 - [X] add node name
 - [ ] could modify action name
 - [ ] support multiple graph
-- [ ] support action options input type
+- [X] support action options input type
 
 ## Refactor
 - [X] combine Node&Edge creation logic
