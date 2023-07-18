@@ -63,6 +63,9 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
         setOpen(false);
     };
 
+    useEffect(() => {
+        form.setFieldsValue(initialValue)
+    }, [form, initialValue])
 
     const renderDefaultOptions = () => {
         return defaultOptions.map((it, index) => {
@@ -75,7 +78,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
                             {...provided.dragHandleProps}>
                             <FormItem
                                 key={it.label} name={it.label} label={it.label}>
-                                <Input/>
+                                <Input value={it.value}/>
                             </FormItem>
                         </div>
                     )}
