@@ -30,21 +30,24 @@ const DrawPanel = () => {
     ];
 
     useEffect(() => {
-        socket.connect()
-            .then(() => {
-                socket.subscribe("/queue/graph/mock-id", (res) => {
-                    console.log("response", res)
-                    const jsonBody = JSON.parse(res.body)
-                    // @ts-ignore
-                    switch (res.headers["return-type"]) {
-                         case "CREATE_NODE":
-                             addNodeModel(jsonBody)
-                             break;
-                        default:
-                             break;
-                    }
-                })
+        socket.connect((_) => {
+            socket.subscribe("/queue/graph/mock-id", (res) => {
+                console.log("response", res)
+                const jsonBody = JSON.parse(res.body)
+                // @ts-ignore
+                switch (res.headers["return-type"]) {
+                    case "CREATE_NODE":
+                        addNodeModel(jsonBody)
+                        break;
+                    default:
+                        break;
+                }
             })
+
+            socket.subscribe("/queue/graph/runtime/mock-id", (res) => {
+                console.log("runtime", res)
+            })
+        })
     }, [])
 
     const combineTools = (cells: EdgeModel[] | NodeModel[]) => {

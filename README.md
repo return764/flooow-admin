@@ -9,6 +9,8 @@ project: flooow
 - [ ] could modify action name
 - [ ] support multiple graph
 - [X] support action options input type
+- [X] support socket resubscribe
+- [ ] support preview one action result
 
 ## Refactor
 - [X] combine Node&Edge creation logic

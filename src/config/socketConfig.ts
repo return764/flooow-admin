@@ -9,7 +9,6 @@ class Socket {
     private sockJS: SockJS
     private client: Stomp.Client
     private retryCount: number = 0
-    private isConnected: boolean = false
 
     constructor(baseUrl: string, endpoint: string) {
         this.baseUrl = baseUrl
@@ -22,18 +21,12 @@ class Socket {
         return new URL(this.endpoint, this.baseUrl).toString()
     }
 
-    connect(): Promise<Frame | undefined> {
-        return new Promise((resolve, reject) => {
-            if (!this.client.connected) {
-                this.client.connect({}, (frame) => {
-                    this.isConnected = true
-                    resolve(frame)
-                }, () => {
-                    this.isConnected = false
-                    this.retry(resolve, reject)
-                })
-            }
-        })
+    connect(connectedCallback: (frame: Frame|undefined) => void) {
+        if (!this.client.connected) {
+            this.client.connect({}, connectedCallback, () => {
+                this.retry(connectedCallback)
+            })
+        }
     }
 
     subscribe(destination: string, callBack: (message: Message) => any, headers?: {}) {
@@ -48,27 +41,26 @@ class Socket {
         this.client.send(destination, header, typeof body === 'string' ? body : JSON.stringify(body))
     }
 
-    private retry(resolve: { (value: any): void; (arg0: Stomp.Frame | undefined): void; }, reject: (reason?: any) => void) {
-        setTimeout(() => {
+    private retry(connectedCallback: (frame: Frame|undefined) => void) {
+        const timer = setInterval(() => {
             if (!this.client.connected) {
                 this.sockJS = new SockJS(this.getFullUrl())
                 this.client = Stomp.over(this.sockJS)
                 this.client.connect({}, (frame) => {
-                    this.isConnected = true
-                    resolve(frame)
+                    this.retryCount = 0
+                    connectedCallback(frame)
+                    console.log("retry success")
                 }, () => {
-                    this.isConnected = false
                     console.log(`socket retry times ${this.retryCount}`)
                     if (this.retryCount < 10) {
                         this.retryCount ++
-                        this.retry(resolve, reject)
                     } else {
                         this.retryCount = 0
-                        reject(new Error("max retry count reached"))
+                        clearInterval(timer)
                     }
                 })
             }
-        }, 5000)
+        }, 1000)
     }
 }
 
