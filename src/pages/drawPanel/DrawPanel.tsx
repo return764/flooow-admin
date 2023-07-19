@@ -13,6 +13,7 @@ import {R} from "../../api/model";
 import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOptionsContainer";
 import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "./GraphContext";
+import ReturnType = R.ReturnType;
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
@@ -36,7 +37,7 @@ const DrawPanel = () => {
                 const jsonBody = JSON.parse(res.body)
                 // @ts-ignore
                 switch (res.headers["return-type"]) {
-                    case "CREATE_NODE":
+                    case ReturnType.CREATE_NODE:
                         addNodeModel(jsonBody)
                         break;
                     default:

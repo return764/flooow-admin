@@ -41,6 +41,15 @@ export namespace R {
         LAST_OUTPUT = 'LAST_OUTPUT'
     }
 
+    export enum ReturnType {
+        CREATE_NODE = 'CREATE_NODE',
+        CREATE_EDGE = 'CREATE_EDGE',
+        MOVE_NODE = 'MOVE_NODE',
+        DELETE_NODE = 'DELETE_NODE',
+        DELETE_EDGE = 'DELETE_EDGE',
+        EXECUTION = 'EXECUTION',
+    }
+
     export interface UpdateInputType {
         optionIds: string[],
         type: OptionInputType
