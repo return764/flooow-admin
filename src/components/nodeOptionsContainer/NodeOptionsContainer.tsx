@@ -67,7 +67,9 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     };
 
     useEffect(() => {
-        form.resetFields()
+        if (!options) {
+            form.resetFields()
+        }
     }, [JSON.stringify(initialValue)])
 
     const renderDefaultOptions = () => {
