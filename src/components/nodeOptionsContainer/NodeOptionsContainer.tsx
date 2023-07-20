@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import Paper from "../Paper";
 import {Graph, NodeView} from "@antv/x6";
 import {App, Button, Divider, Form, Input, Select} from "antd";
@@ -26,6 +26,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const [nodeModel, setNodeModel] = useState<NodeModel>()
     const {getNodeModelById} = useContext(GraphContext)
     const {message} = App.useApp()
+    const formRef = useRef(null)
     const [form] = useForm()
 
     const inputOptions = useMemo(() => options.filter(it => it.inputType === OptionInputType.LAST_OUTPUT), [options])
@@ -67,7 +68,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     };
 
     useEffect(() => {
-        if (!options) {
+        if (formRef.current) {
             form.resetFields()
         }
     }, [JSON.stringify(initialValue)])
@@ -161,6 +162,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
             <p>{nodeModel?.name}</p>
             <DragDropContext onDragEnd={handleDragEnd}>
                 {(!isEmpty(options) || !isEmpty(inputOptions)) && <Form
+                  ref={formRef}
                   labelCol={{span: 8}}
                   initialValues={initialValue}
                   form={form}>
