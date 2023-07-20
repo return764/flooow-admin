@@ -24,6 +24,14 @@
     align-items: center;
 }
 
+.process-status-icon {
+    display: flex;
+    align-items: center;
+    margin-left: .4rem;
+    height: inherit;
+    width: 1rem;
+}
+
 #tool-bar {
     position: fixed;
     padding: 4px;

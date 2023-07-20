@@ -3,7 +3,7 @@ project: flooow
 
 ## Process
 - [X] support logic for node&edge deletion
-- [ ] showing action running status
+- [X] showing action running status
 - [X] support node options form
 - [X] add node name
 - [ ] could modify action name

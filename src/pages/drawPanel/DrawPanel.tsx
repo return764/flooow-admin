@@ -46,7 +46,9 @@ const DrawPanel = () => {
             })
 
             socket.subscribe("/queue/graph/runtime/mock-id", (res) => {
-                console.log("runtime", res)
+                const cellId = res.headers["node-id"]
+                const cell = graphRef.current?.getCellById(cellId)
+                cell?.setData({status: res.headers["status"]})
             })
         })
     }, [])
@@ -207,6 +209,8 @@ const DrawPanel = () => {
     }
 
     const onExecute = () => {
+        graphRef.current!.getCells()
+            .map(it=> it.setData({status: "NEW"}))
         API.graph.execute()
     }
 

@@ -50,6 +50,14 @@ export namespace R {
         EXECUTION = 'EXECUTION',
     }
 
+    export enum ActionStatus {
+       NEW = 'NEW',
+       RUNNING = 'RUNNING',
+       SUCCESS = 'SUCCESS',
+       FAILURE = 'FAILURE',
+       ON_READY = 'ON_READY'
+    }
+
     export interface UpdateInputType {
         optionIds: string[],
         type: OptionInputType

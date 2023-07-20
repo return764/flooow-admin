@@ -1,5 +1,5 @@
 import {Graph, Node} from "@antv/x6";
-import React, {useEffect} from "react";
+import React from "react";
 import BaseRect from "./BaseRectShape";
 import {RectData} from "../interface";
 import _ from "lodash";
