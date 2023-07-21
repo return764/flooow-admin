@@ -23,6 +23,8 @@ class Socket {
 
     connect(connectedCallback: (frame: Frame|undefined) => void) {
         if (!this.client.connected) {
+            this.sockJS = new SockJS(this.getFullUrl())
+            this.client = Stomp.over(this.sockJS)
             this.client.connect({}, connectedCallback, () => {
                 this.retry(connectedCallback)
             })
@@ -31,6 +33,10 @@ class Socket {
 
     subscribe(destination: string, callBack: (message: Message) => any, headers?: {}) {
         this.client.subscribe(destination, callBack, headers)
+    }
+
+    isConnected(): boolean {
+        return this.client.connected
     }
 
     disconnect = () => {
