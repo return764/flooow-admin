@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as SockJS from 'sockjs-client/dist/sockjs';
-import Stomp, {Frame, Message} from "stompjs";
+import Stomp, {Frame, Message, Subscription} from "stompjs";
 
 
 class Socket {
@@ -9,6 +9,7 @@ class Socket {
     private sockJS: SockJS
     private client: Stomp.Client
     private retryCount: number = 0
+    private connecting: boolean = false
 
     constructor(baseUrl: string, endpoint: string) {
         this.baseUrl = baseUrl
@@ -22,17 +23,23 @@ class Socket {
     }
 
     connect(connectedCallback: (frame: Frame|undefined) => void) {
-        if (!this.client.connected) {
+        const connectedCallbackWrapped = (frame: Frame|undefined) => {
+            connectedCallback(frame)
+            this.connecting = false
+        }
+
+        if (!this.client.connected && !this.connecting) {
+            this.connecting = true
             this.sockJS = new SockJS(this.getFullUrl())
             this.client = Stomp.over(this.sockJS)
-            this.client.connect({}, connectedCallback, () => {
-                this.retry(connectedCallback)
+            this.client.connect({}, connectedCallbackWrapped, () => {
+                this.retry(connectedCallbackWrapped)
             })
         }
     }
 
-    subscribe(destination: string, callBack: (message: Message) => any, headers?: {}) {
-        this.client.subscribe(destination, callBack, headers)
+    subscribe(destination: string, callBack: (message: Message) => any, headers?: {}): Subscription {
+        return this.client.subscribe(destination, callBack, headers)
     }
 
     isConnected(): boolean {
