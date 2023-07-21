@@ -14,6 +14,7 @@ import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOpti
 import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "./GraphContext";
 import ReturnType = R.ReturnType;
+import GraphContextProvider from "./GraphContextProvider";
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
@@ -119,7 +120,6 @@ const DrawPanel = () => {
                 },
             }
         });
-        setOnReady(true);
         graphRef.current!.use(
             new Scroller({
                 enabled: true,
@@ -147,6 +147,7 @@ const DrawPanel = () => {
         graphRef.current!.on('node:move', onNodeMove)
         graphRef.current!.on('node:moved', onNodeMoved)
         graphRef.current!.on('cell:removed', onCellDelete)
+        setOnReady(true);
         return () => {
             graphRef.current!.off('cell:added', onCellCreate)
             graphRef.current!.off('edge:connected', onEdgeConnected)
@@ -236,4 +237,15 @@ const DrawPanel = () => {
     )
 };
 
-export default DrawPanel;
+function wrappedContext(Component: () => JSX.Element) {
+    const MemoComponent = React.memo(Component)
+    return () => {
+        return (
+            <GraphContextProvider>
+                <MemoComponent/>
+            </GraphContextProvider>
+        )
+    }
+}
+
+export default wrappedContext(DrawPanel);
