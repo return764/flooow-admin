@@ -20,5 +20,5 @@ project: flooow
 ## Bug
 - [ ] fix multiple shape move
 - [X] fix the socket reconnect logic
-- [ ] render blank page when DrawPanel unmount
+- [X] render blank page when DrawPanel unmount
 - [X] can't auto subscribe socket when first enter DrawPanel Page, only refresh page

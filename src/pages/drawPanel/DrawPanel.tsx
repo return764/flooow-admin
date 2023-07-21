@@ -223,7 +223,7 @@ const DrawPanel = () => {
     }
 
     return (
-        <>
+        <div style={{height: '100%', width: '100%'}}>
             <div id='draw-container' style={{height: '100%', width: '100%'}}> </div>
             {onReady && <DndContainer graph={graphRef.current!} />}
             {onReady && <NodeOptionsContainer graph={graphRef.current!} />}
@@ -240,7 +240,7 @@ const DrawPanel = () => {
                 right:'20px',
                 bottom: '20px',
             }}/>
-        </>
+        </div>
     )
 };
 
