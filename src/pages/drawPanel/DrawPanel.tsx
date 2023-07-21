@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Cell, EdgeView, Graph, NodeView, Platform} from "@antv/x6";
 import {Scroller} from "@antv/x6-plugin-scroller";
 import Paper from "../../components/Paper";
-import {Button, MenuProps, Space} from "antd";
+import {App, Button, MenuProps, Space} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {Selection} from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
@@ -15,11 +15,13 @@ import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "./GraphContext";
 import ReturnType = R.ReturnType;
 import GraphContextProvider from "./GraphContextProvider";
+import ActionStatus = R.ActionStatus;
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
+    const {message} = App.useApp()
 
     const onClick: (cell: Cell) => void = (cell) => {
         cell.remove()
@@ -49,7 +51,12 @@ const DrawPanel = () => {
             socket.subscribe("/queue/graph/runtime/mock-id", (res) => {
                 const cellId = res.headers["node-id"]
                 const cell = graphRef.current?.getCellById(cellId)
-                cell?.setData({status: res.headers["status"]})
+                const body = res.body
+                const status = res.headers["status"]
+                if (status === ActionStatus.VALIDATION_FAILED) {
+                    message.warning(body)
+                }
+                cell?.setData({status})
             })
         })
     }, [])

@@ -55,7 +55,8 @@ export namespace R {
        RUNNING = 'RUNNING',
        SUCCESS = 'SUCCESS',
        FAILURE = 'FAILURE',
-       ON_READY = 'ON_READY'
+       ON_READY = 'ON_READY',
+       VALIDATION_FAILED = 'VALIDATION_FAILED'
     }
 
     export interface UpdateInputType {

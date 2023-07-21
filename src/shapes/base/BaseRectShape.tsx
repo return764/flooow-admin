@@ -7,7 +7,7 @@ import {RectData} from "../interface";
 import {
     CheckCircleTwoTone,
     ClockCircleTwoTone,
-    CloseCircleTwoTone,
+    CloseCircleTwoTone, ExclamationCircleTwoTone,
     SyncOutlined
 } from "@ant-design/icons";
 import {R} from "../../api/model";
@@ -48,6 +48,8 @@ const BaseRect = (props: {
                 return <SyncOutlined spin style={{color: '#1677FF'}} />
             case R.ActionStatus.ON_READY:
                 return <ClockCircleTwoTone/>
+            case R.ActionStatus.VALIDATION_FAILED:
+                return <ExclamationCircleTwoTone twoToneColor="#faad14"/>
             case R.ActionStatus.FAILURE:
                 return <CloseCircleTwoTone twoToneColor="#F50000"/>
             case R.ActionStatus.SUCCESS:
