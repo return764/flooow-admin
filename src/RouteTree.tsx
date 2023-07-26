@@ -10,7 +10,7 @@ const RouteTree = () => {
             <Route path='/' element={<App/>}>
                 <Route path='/' element={<Dashboard/>}/>
             </Route>
-            <Route path='/draw' element={<DrawPanel/>}/>
+            <Route path='/draw/:graphId' element={<DrawPanel/>}/>
         </Routes>
     )
 };

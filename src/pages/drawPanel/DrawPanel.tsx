@@ -16,12 +16,15 @@ import {GraphContext} from "./GraphContext";
 import ReturnType = R.ReturnType;
 import GraphContextProvider from "./GraphContextProvider";
 import ActionStatus = R.ActionStatus;
+import {useParams} from "react-router-dom";
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
     const {message} = App.useApp()
+    const params = useParams()
+    const graphId = params.graphId!!
 
     const onClick: (cell: Cell) => void = (cell) => {
         cell.remove()
@@ -35,7 +38,7 @@ const DrawPanel = () => {
 
     useEffect(() => {
         socket.connect((_) => {
-            socket.subscribe("/queue/graph/mock-id", (res) => {
+            socket.subscribe(`/queue/graph/${graphId}`, (res) => {
                 console.log("response", res)
                 const jsonBody = JSON.parse(res.body)
                 // @ts-ignore
@@ -48,7 +51,7 @@ const DrawPanel = () => {
                 }
             })
 
-            socket.subscribe("/queue/graph/runtime/mock-id", (res) => {
+            socket.subscribe(`/queue/graph/runtime/${graphId}`, (res) => {
                 const cellId = res.headers["node-id"]
                 const cell = graphRef.current?.getCellById(cellId)
                 const body = res.body
@@ -76,7 +79,7 @@ const DrawPanel = () => {
     };
 
     useEffect(() => {
-        API.graph.retrieveGraph().then((res) => {
+        API.graph.retrieveGraph(graphId as string).then((res) => {
             const nodes = combineTools(res.data.nodes)
             const edges = combineTools(res.data.edges)
             const graphData = {nodes, edges};
@@ -185,12 +188,12 @@ const DrawPanel = () => {
             postX: e.node.position().x,
             postY: e.node.position().y
         }
-        API.graph.moveNode(moveEvent)
+        API.graph.moveNode(graphId, moveEvent)
     }
 
     const onEdgeConnected = ({isNew, edge}: EdgeView.EventArgs['edge:connected']) => {
         if (isNew) {
-            API.graph.addEdge(edge.toRequestData())
+            API.graph.addEdge(graphId, edge.toRequestData())
         }
     }
     const onCellCreate = (e: Cell.EventArgs['added']) => {
@@ -202,24 +205,24 @@ const DrawPanel = () => {
             },
         })
         if (e.cell.isNode()) {
-            API.graph.addNode(e.cell.toRequestData())
+            API.graph.addNode(graphId, e.cell.toRequestData())
         }
     }
 
     const onCellDelete = (e: Cell.EventArgs['removed']) => {
         if (e.cell.isNode()) {
-            API.graph.deleteNode(e.cell.id)
+            API.graph.deleteNode(graphId, e.cell.id)
         }
 
         if (e.cell.isEdge()) {
-            API.graph.deleteEdge(e.cell.id)
+            API.graph.deleteEdge(graphId, e.cell.id)
         }
     }
 
     const onExecute = () => {
         graphRef.current!.getCells()
             .map(it=> it.setData({status: "NEW"}))
-        API.graph.execute()
+        API.graph.execute(graphId)
     }
 
     return (

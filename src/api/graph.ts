@@ -1,20 +1,16 @@
 import {R} from "./model";
-import axiosInstance from "../config/axiosConfig";
 import socket from "../config/socketConfig";
-
-
-
-
+import axiosInstance from "../config/axiosConfig";
+import {EdgeModel, NodeModel} from "../@types/x6";
+import ActionOptionForm = R.ActionOptionForm;
 import ActionTemplate = R.ActionTemplate;
 import ActionOption = R.ActionOption;
 import GraphData = R.GraphData;
-import ActionOptionForm = R.ActionOptionForm;
-import {EdgeModel, NodeModel} from "../@types/x6";
 export const retrieveAllTemplates = () => {
     return axiosInstance.get<ActionTemplate[]>("/graphs/templates")
 }
-export const retrieveGraph = () => {
-    return axiosInstance.get<GraphData>("/graphs")
+export const retrieveGraph = (graphId: string) => {
+    return axiosInstance.get<GraphData>(`/graphs/${graphId}`)
 }
 
 export const retrieveGraphList = () => {
@@ -30,27 +26,27 @@ export const updateActionOptions = (nodeId: string, values: ActionOptionForm) =>
     return axiosInstance.post<ActionOptionForm>(`/graphs/node/${nodeId}/options`, values)
 };
 
-export const deleteEdge = (id: string) => {
-    socket.send("/app/graph/mock-id/edge/delete", id)
+export const deleteEdge = (graphId: string, id: string) => {
+    socket.send(`/app/graph/${graphId}/edge/delete`, id)
 };
 
 
-export const deleteNode = (id: string) => {
-    socket.send("/app/graph/mock-id/node/delete", id)
+export const deleteNode = (graphId: string, id: string) => {
+    socket.send(`/app/graph/${graphId}/node/delete`, id)
 };
 
 
-export const addEdge = (edge: EdgeModel) => {
-    socket.send("/app/graph/mock-id/edge/create", edge)
+export const addEdge = (graphId: string, edge: EdgeModel) => {
+    socket.send(`/app/graph/${graphId}/edge/create`, edge)
 }
 
-export const addNode = (node: NodeModel) => {
-    socket.send("/app/graph/mock-id/node/create", node)
+export const addNode = (graphId: string, node: NodeModel) => {
+    socket.send(`/app/graph/${graphId}/node/create`, node)
 }
-export const moveNode = (moveEvent: R.MoveNodeEvent) => {
-    socket.send("/app/graph/mock-id/node/move", moveEvent)
+export const moveNode = (graphId: string, moveEvent: R.MoveNodeEvent) => {
+    socket.send(`/app/graph/${graphId}/node/move`, moveEvent)
 }
 
-export const execute = () => {
-    socket.send("/app/graph/mock-id/execution")
+export const execute = (graphId: string) => {
+    socket.send(`/app/graph/${graphId}/execution`)
 }

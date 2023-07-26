@@ -7,8 +7,8 @@ project: flooow
 - [X] support node options form
 - [X] add node name
 - [ ] could modify action name
-- [ ] support multiple graph
-- [ ] suuport graph list pagination
+- [X] support multiple graph
+- [ ] support graph list pagination
 - [X] support action options input type
 - [X] support socket resubscribe
 - [ ] support preview one action result
