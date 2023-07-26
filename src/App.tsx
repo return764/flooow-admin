@@ -1,6 +1,6 @@
 import React, {Suspense, useState} from 'react'
 import {Breadcrumb, Layout, Menu, MenuProps, theme} from "antd";
-import {Outlet, Route, Routes} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import {
     DesktopOutlined,
     FileOutlined,
@@ -34,7 +34,7 @@ const items: MenuItem[] = [
 ];
 
 const App = () => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -53,16 +53,15 @@ const App = () => {
                 </div>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
             </Sider>
-            <Layout className="site-layout">
+            <Layout>
                 <Header style={{padding: 0, background: colorBgContainer}}/>
                 <Content style={{margin: '0 16px'}}>
-                    <Breadcrumb style={{margin: '16px 0'}}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <Suspense fallback={"loading"}>
-                        <Outlet/>
-                    </Suspense>
+                    <Breadcrumb items={[{ title: 'Dashboard' }]} style={{margin: '16px 0'}} />
+                    <div style={{padding: '20px 20px', background: colorBgContainer}}>
+                        <Suspense fallback={"loading"}>
+                            <Outlet/>
+                        </Suspense>
+                    </div>
                 </Content>
                 <Footer style={{textAlign: 'center'}}>Ant Design ©2023 Created by Ant UED</Footer>
             </Layout>

@@ -64,4 +64,9 @@ export namespace R {
         type: OptionInputType
     }
 
+    export interface GraphSummary {
+        id: string,
+        name: string,
+    }
+
 }

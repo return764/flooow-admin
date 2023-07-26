@@ -2,26 +2,32 @@ import {R} from "./model";
 import axiosInstance from "../config/axiosConfig";
 import socket from "../config/socketConfig";
 
+
+
+
 import ActionTemplate = R.ActionTemplate;
 import ActionOption = R.ActionOption;
 import GraphData = R.GraphData;
 import ActionOptionForm = R.ActionOptionForm;
 import {EdgeModel, NodeModel} from "../@types/x6";
 export const retrieveAllTemplates = () => {
-    return axiosInstance.get<ActionTemplate[]>("/graph/templates")
+    return axiosInstance.get<ActionTemplate[]>("/graphs/templates")
 }
 export const retrieveGraph = () => {
-    return axiosInstance.get<GraphData>("/graph")
+    return axiosInstance.get<GraphData>("/graphs")
 }
 
+export const retrieveGraphList = () => {
+    return axiosInstance.get("/graphs")
+};
 
 export const retrieveActionOptions = (nodeId: string) => {
-    return axiosInstance.get<ActionOption[]>(`/graph/node/${nodeId}/options`)
+    return axiosInstance.get<ActionOption[]>(`/graphs/node/${nodeId}/options`)
 }
 
 
 export const updateActionOptions = (nodeId: string, values: ActionOptionForm) => {
-    return axiosInstance.post<ActionOptionForm>(`/graph/node/${nodeId}/options`, values)
+    return axiosInstance.post<ActionOptionForm>(`/graphs/node/${nodeId}/options`, values)
 };
 
 export const deleteEdge = (id: string) => {
