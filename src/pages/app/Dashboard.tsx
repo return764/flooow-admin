@@ -4,12 +4,14 @@ import GraphList from "../../components/graphList";
 import Api from "../../api";
 import {Input} from "antd/lib";
 import {AxiosError} from "axios";
+import useEmit from "../../hooks/useEmit";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const {message} = App.useApp();
+    const emitter = useEmit('graph-list-change')
 
     const handleOk = async () => {
         try {
@@ -18,6 +20,7 @@ function Dashboard() {
             await Api.graph.addGraph(form.getFieldsValue())
             setLoading(false)
             setOpen(false)
+            emitter()
             message.success("create graph successfully!")
         } catch (e) {
             if (e instanceof AxiosError) {

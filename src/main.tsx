@@ -5,13 +5,16 @@ import './index.css'
 import {BrowserRouter} from "react-router-dom";
 import './extension/x6Extension'
 import RouteTree from "./RouteTree";
+import EmitterContextProvider from "./context/EmitterContextProvider";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <StrictMode>
         <AppProvider>
-            <BrowserRouter>
-                <RouteTree />
-            </BrowserRouter>
+            <EmitterContextProvider>
+                <BrowserRouter>
+                    <RouteTree />
+                </BrowserRouter>
+            </EmitterContextProvider>
         </AppProvider>
     </StrictMode>,
 )

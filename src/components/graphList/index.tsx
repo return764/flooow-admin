@@ -4,6 +4,7 @@ import API from "../../api";
 import {R} from "../../api/model";
 import GraphSummary = R.GraphSummary;
 import {useNavigate} from "react-router-dom";
+import useEventOn from "../../hooks/useEventOn";
 
 interface GraphListProps {
 
@@ -12,11 +13,17 @@ interface GraphListProps {
 const GraphList: React.FC<GraphListProps> = () => {
     const [list, setList] = useState<GraphSummary[]>();
     const navigate = useNavigate();
+    const on = useEventOn('graph-list-change')
 
-    useEffect(() => {
+    function requestList() {
         API.graph.retrieveGraphList().then(r => {
             setList(r.data)
         })
+    }
+
+    useEffect(() => {
+        on(requestList)
+        requestList();
     }, [])
 
     const handleEditGraph = (graph: GraphSummary) => {
