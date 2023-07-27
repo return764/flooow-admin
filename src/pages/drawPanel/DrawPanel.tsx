@@ -62,6 +62,11 @@ const DrawPanel = () => {
                 cell?.setData({status})
             })
         })
+        return () => {
+            if (socket.isConnected()) {
+                socket.disconnect()
+            }
+        }
     }, [])
 
     const combineTools = (cells: EdgeModel[] | NodeModel[]) => {
