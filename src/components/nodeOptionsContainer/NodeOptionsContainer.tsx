@@ -11,7 +11,7 @@ import {DragDropContext, Draggable, Droppable, OnDragEndResponder} from 'react-b
 import {clone, isEmpty} from "lodash";
 import OptionInputType = R.OptionInputType;
 import {NodeModel} from "../../@types/x6";
-import {GraphContext} from "../../pages/drawPanel/GraphContext";
+import {GraphContext} from "../../context/GraphContext";
 import {DefaultOptionType} from "rc-select/lib/Select";
 
 type NodeOptionsContainerProps = {

@@ -1,6 +1,6 @@
 import {createContext} from "react";
-import {EdgeModel, NodeModel} from "../../@types/x6";
-import {R} from "../../api/model";
+import {EdgeModel, NodeModel} from "../@types/x6";
+import {R} from "../api/model";
 import GraphData = R.GraphData;
 
 

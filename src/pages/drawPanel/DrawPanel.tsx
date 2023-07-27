@@ -12,9 +12,9 @@ import socket from "../../config/socketConfig";
 import {R} from "../../api/model";
 import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOptionsContainer";
 import {EdgeModel, NodeModel} from "../../@types/x6";
-import {GraphContext} from "./GraphContext";
+import {GraphContext} from "../../context/GraphContext";
 import ReturnType = R.ReturnType;
-import GraphContextProvider from "./GraphContextProvider";
+import GraphContextProvider from "../../context/GraphContextProvider";
 import ActionStatus = R.ActionStatus;
 import {useParams} from "react-router-dom";
 

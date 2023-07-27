@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {R} from "../../api/model";
-import {EdgeModel, NodeModel} from "../../@types/x6";
+import {R} from "../api/model";
+import {EdgeModel, NodeModel} from "../@types/x6";
 import GraphData = R.GraphData;
 import {GraphContext} from "./GraphContext";
 
