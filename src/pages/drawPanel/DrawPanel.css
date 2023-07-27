@@ -27,7 +27,7 @@
 .process-status-icon {
     display: flex;
     align-items: center;
-    margin-left: .4rem;
+    margin-right: .4rem;
     height: inherit;
     width: 1rem;
 }

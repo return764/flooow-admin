@@ -62,13 +62,13 @@ const BaseRect = (props: {
              onMouseEnter={handleMouseEnter}
              onMouseLeave={handleMouseLeave}
         >
-            <div className='process-status-icon'>{renderStatusIcon()}</div>
             <div className='process-node-type-icon'>
                 { type === 'input' && <img src={inputSvg} style={{ margin: '12px',padding: '4px', borderRadius: '4px', backgroundColor: '#0958d9' }} height={'12px'} alt='input'/> }
                 { type === 'output' && <img src={outputSvg} style={{ margin: '12px',padding: '4px', borderRadius: '4px', backgroundColor: '#faad14' }}  height={'12px'} alt='output'/> }
                 { type === 'process' && <img src={processSvg} style={{ margin: '12px',padding: '4px', borderRadius: '4px', backgroundColor: '#13c2c2' }}  height={'12px'} alt='processSvg'/> }
             </div>
             <div className='process-node-label'>{label}</div>
+            <div className='process-status-icon'>{renderStatusIcon()}</div>
         </div>
     )
 }
