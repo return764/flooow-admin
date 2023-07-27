@@ -36,6 +36,10 @@ export namespace R {
         data : ActionOption[]
     }
 
+    export interface GraphAddForm {
+        name: string
+    }
+
     export enum OptionInputType {
         DEFAULT = 'DEFAULT',
         LAST_OUTPUT = 'LAST_OUTPUT'
