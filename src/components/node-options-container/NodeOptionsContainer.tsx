@@ -1,5 +1,5 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import Paper from "../Paper";
+import Paper from "../paper/Paper";
 import {Graph, NodeView} from "@antv/x6";
 import {App, Button, Divider, Form, Input, Select} from "antd";
 import './NodeOptionsContainer.css';

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {App, Button, Form, Modal} from "antd";
-import GraphList from "../../components/graphList";
+import GraphList from "../../components/graph-list";
 import Api from "../../api";
 import {Input} from "antd/lib";
 import {AxiosError} from "axios";

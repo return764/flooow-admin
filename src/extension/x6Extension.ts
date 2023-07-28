@@ -3,7 +3,7 @@ import {register} from "@antv/x6-react-shape";
 import InputShape from "../shapes/base/InputShape";
 import ProcessShape from "../shapes/base/PorcessShape";
 import OutputShape from "../shapes/base/OutputShape";
-import ContextMenuTool from "../components/contextMenuTool/ContextMenuTool";
+import ContextMenuTool from "../components/context-menu-tool/ContextMenuTool";
 
 Cell.prototype.toRequestData = function () {
     if (this.isNode()) {

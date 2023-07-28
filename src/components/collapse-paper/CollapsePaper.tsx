@@ -1,5 +1,5 @@
 import React, {FC, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from 'react';
-import Paper from "../Paper";
+import Paper from "../paper/Paper";
 import {LeftOutlined} from "@ant-design/icons";
 import './CollapsePaper.css';
 import {createPortal} from "react-dom";

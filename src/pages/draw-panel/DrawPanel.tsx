@@ -1,22 +1,22 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Cell, EdgeView, Graph, NodeView, Platform} from "@antv/x6";
 import {Scroller} from "@antv/x6-plugin-scroller";
-import Paper from "../../components/Paper";
+import Paper from "../../components/paper/Paper";
 import {App, Button, MenuProps, Space} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {Selection} from "@antv/x6-plugin-selection";
 import './DrawPanel.css'
-import DndContainer from "../../components/dndContainer/DndContainer";
 import API from "../../api";
 import socket from "../../config/socketConfig";
 import {R} from "../../api/model";
-import NodeOptionsContainer from "../../components/nodeOptionsContainer/NodeOptionsContainer";
 import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
 import ReturnType = R.ReturnType;
 import GraphContextProvider from "../../context/GraphContextProvider";
 import ActionStatus = R.ActionStatus;
 import {useParams} from "react-router-dom";
+import DndContainer from "../../components/dnd-container/DndContainer";
+import NodeOptionsContainer from "../../components/node-options-container/NodeOptionsContainer";
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
