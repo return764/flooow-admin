@@ -15,20 +15,25 @@ const EmitterContextProvider: React.FC<React.PropsWithChildren>  = ({children}) 
         if (!listenerMap.has(name)) {
             listenerMap.set(name, new Array<EventListener>())
         }
-        const previousList = listenerMap.get(name)!!;
+        const previousList = listenerMap.get(name)!!
         previousList.push(handler)
         listenerMap.set(name, previousList)
     }
 
     const emit = <T extends any = any>(name: string, event?: T) => {
         if (!listenerMap.has(name)) return
-        const listeners = listenerMap.get(name)!!;
+        const listeners = listenerMap.get(name)!!
         listeners.forEach(callback => callback(event))
     };
 
+    const removeListener = (name: string, handler: EventHandler) => {
+        if (!listenerMap.has(name)) return
+        const listeners = listenerMap.get(name)!!
+        listenerMap.set(name, listeners.filter(it => it !== handler))
+    }
 
     return (
-        <EmitterContext.Provider value={{on, emit}}>
+        <EmitterContext.Provider value={{on, removeListener, emit}}>
             {children}
         </EmitterContext.Provider>
     )

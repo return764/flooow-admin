@@ -13,7 +13,7 @@ interface GraphListProps {
 const GraphList: React.FC<GraphListProps> = () => {
     const [list, setList] = useState<GraphSummary[]>();
     const navigate = useNavigate();
-    const on = useEventOn('graph-list-change')
+    const {on, removeListener} = useEventOn('graph-list-change')
 
     function requestList() {
         API.graph.retrieveGraphList().then(r => {
@@ -24,6 +24,9 @@ const GraphList: React.FC<GraphListProps> = () => {
     useEffect(() => {
         on(requestList)
         requestList();
+        return () => {
+            removeListener(requestList)
+        }
     }, [])
 
     const handleEditGraph = (graph: GraphSummary) => {

@@ -5,10 +5,15 @@ import {EventHandler} from "../context/EmitterContextProvider";
 
 const useEventOn = (name: string) => {
 
-    const {on} = useContext(EmitterContext);
+    const {on, removeListener} = useContext(EmitterContext);
 
-    return (handler: EventHandler) => {
-        on(name, handler)
+    return {
+        on: (handler: EventHandler) => {
+            on(name, handler)
+        },
+        removeListener: (handler: EventHandler) => {
+            removeListener(name, handler)
+        }
     }
 }
 
