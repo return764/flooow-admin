@@ -1,8 +1,8 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import Paper from "../paper/Paper";
+import Paper from "../paper";
 import {Graph, NodeView} from "@antv/x6";
 import {App, Button, Divider, Form, Input, Select} from "antd";
-import './NodeOptionsContainer.css';
+import './index.css';
 import API from "../../api";
 import {R} from "../../api/model";
 import FormItem from "antd/es/form/FormItem";

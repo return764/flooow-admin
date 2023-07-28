@@ -1,7 +1,7 @@
 import React, {FC, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from 'react';
-import Paper from "../paper/Paper";
+import Paper from "../paper";
 import {LeftOutlined} from "@ant-design/icons";
-import './CollapsePaper.css';
+import './index.css';
 import {createPortal} from "react-dom";
 
 interface CollapsePaperProps extends PropsWithChildren, HTMLAttributes<HTMLDivElement>{

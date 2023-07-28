@@ -1,5 +1,5 @@
 import React, {FC, HTMLAttributes, PropsWithChildren} from 'react';
-import './Paper.css'
+import './index.css'
 
 interface PaperProps extends PropsWithChildren, HTMLAttributes<HTMLDivElement>  {
 }

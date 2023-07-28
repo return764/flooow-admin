@@ -2,7 +2,7 @@ import {Route, Routes} from "react-router-dom";
 import Dashboard from "./pages/app/Dashboard";
 import React from "react";
 import App from "./App";
-import DrawPanel from "./pages/draw-panel/DrawPanel";
+import DrawPanel from "./pages/draw-panel";
 
 const RouteTree = () => {
     return (
