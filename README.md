@@ -7,6 +7,7 @@ project: flooow
 - [X] support node options form
 - [X] add node name
 - [ ] could modify action name
+- [X] could delete one graph
 - [X] support multiple graph
 - [ ] support graph list pagination
 - [X] support action options input type

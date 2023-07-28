@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, List} from "antd";
+import {App, Button, List} from "antd";
 import API from "../../api";
 import {R} from "../../api/model";
 import GraphSummary = R.GraphSummary;
@@ -13,6 +13,7 @@ interface GraphListProps {
 const GraphList: React.FC<GraphListProps> = () => {
     const [list, setList] = useState<GraphSummary[]>();
     const navigate = useNavigate();
+    const {message} = App.useApp()
     const {on, removeListener} = useEventOn('graph-list-change')
 
     function requestList() {
@@ -30,7 +31,18 @@ const GraphList: React.FC<GraphListProps> = () => {
     }, [])
 
     const handleEditGraph = (graph: GraphSummary) => {
-        navigate(`/draw/${graph.id}`)
+        return () => {
+            navigate(`/draw/${graph.id}`)
+        }
+    }
+
+    const handleDeleteGraph = (graph: GraphSummary) => {
+        return () => {
+            API.graph.deleteGraph(graph.id).then(r => {
+                message.success('delete graph success!')
+                requestList()
+            })
+        }
     }
 
     return (
@@ -41,8 +53,8 @@ const GraphList: React.FC<GraphListProps> = () => {
             renderItem={(item) => (
                 <List.Item
                     actions={[
-                        <Button type={"primary"} onClick={() => handleEditGraph(item)}>Edit</Button>,
-                        <Button danger>Delete</Button>]}
+                        <Button type={"primary"} onClick={handleEditGraph(item)}>Edit</Button>,
+                        <Button danger onClick={handleDeleteGraph(item)}>Delete</Button>]}
                 >
                     <div>{item.name}</div>
                 </List.Item>
