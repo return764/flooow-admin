@@ -17,12 +17,15 @@ import ActionStatus = R.ActionStatus;
 import {useParams} from "react-router-dom";
 import DndContainer from "../../components/dnd-container";
 import NodeOptionsContainer from "../../components/node-options-container";
+import SocketStatus from "../../components/socket-status";
+import useEmit from "../../hooks/useEmit";
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
     const [executing, setExecuting] = useState(false);
+    const socketConnectedEmitter = useEmit('socket-connected');
     const {message} = App.useApp()
     const params = useParams()
     const graphId = params.graphId!!
@@ -65,6 +68,9 @@ const DrawPanel = () => {
                 }
                 cell?.setData({status})
             })
+            socketConnectedEmitter.emit(true)
+        }, () => {
+            socketConnectedEmitter.emit(false)
         })
         return () => {
             if (socket.isConnected()) {
@@ -243,13 +249,14 @@ const DrawPanel = () => {
             <div id='draw-container' style={{height: '100%', width: '100%'}}> </div>
             {onReady && <DndContainer graph={graphRef.current!} />}
             {onReady && <NodeOptionsContainer graph={graphRef.current!} />}
-            <Paper id='tool-bar'>
-                <Space>
-                    <Button onClick={onCenterContent}>画布居中</Button>
-                    <Button onClick={onExecute} loading={executing}>执行</Button>
-                    <Button onClick={onExecute}>保存</Button>
-                </Space>
-            </Paper>
+                <Paper id='tool-bar'>
+                    <Space>
+                        <Button onClick={onCenterContent}>画布居中</Button>
+                        <Button onClick={onExecute} loading={executing}>执行</Button>
+                        <Button onClick={onExecute}>保存</Button>
+                    </Space>
+                    <SocketStatus/>
+                </Paper>
             <Paper id='minimap' style={{
                 position: 'fixed',
                 padding: '4px',

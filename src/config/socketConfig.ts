@@ -22,7 +22,7 @@ class Socket {
         return new URL(this.endpoint, this.baseUrl).toString()
     }
 
-    connect(connectedCallback: (frame: Frame|undefined) => void) {
+    connect(connectedCallback: (frame: Frame|undefined) => void, errorCallback?: () => void) {
         const connectedCallbackWrapped = (frame: Frame|undefined) => {
             connectedCallback(frame)
             this.connecting = false
@@ -33,7 +33,8 @@ class Socket {
             this.sockJS = new SockJS(this.getFullUrl())
             this.client = Stomp.over(this.sockJS)
             this.client.connect({}, connectedCallbackWrapped, () => {
-                this.retry(connectedCallbackWrapped)
+                errorCallback && errorCallback()
+                this.retry(connectedCallbackWrapped, errorCallback)
             })
         }
     }
@@ -47,14 +48,15 @@ class Socket {
     }
 
     disconnect = () => {
-        this.client.disconnect(() => {})
+        this.client.disconnect(() => {
+            console.log("disconnect callback")})
     };
 
     send(destination: string, body?: any, header?: {}) {
         this.client.send(destination, header, typeof body === 'string' ? body : JSON.stringify(body))
     }
 
-    private retry(connectedCallback: (frame: Frame|undefined) => void) {
+    private retry(connectedCallback: (frame: Frame|undefined) => void, errorCallback?: () => void) {
         const timer = setInterval(() => {
             if (!this.client.connected) {
                 this.sockJS = new SockJS(this.getFullUrl())
@@ -64,6 +66,7 @@ class Socket {
                     connectedCallback(frame)
                     console.log("retry success")
                 }, () => {
+                    errorCallback && errorCallback()
                     console.log(`socket retry times ${this.retryCount}`)
                     if (this.retryCount < 10) {
                         this.retryCount ++
@@ -73,7 +76,7 @@ class Socket {
                     }
                 })
             }
-        }, 1000)
+        }, 3000)
     }
 }
 

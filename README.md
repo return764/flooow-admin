@@ -16,6 +16,7 @@ project: flooow
 - [X] support action options input type
 - [X] support socket resubscribe
 - [ ] support preview one action result
+- [X] support show socket connection status
 
 ## Refactor
 - [X] combine Node&Edge creation logic

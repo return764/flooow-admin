@@ -1,0 +1,12 @@
+.socket-status {
+    margin: 0 .4rem;
+}
+
+.socket-status .ant-badge-status-dot {
+    height: 10px !important;
+    width: 10px !important;
+}
+
+.socket-status .ant-badge {
+    margin: 0 .35rem;
+}
