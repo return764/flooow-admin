@@ -8,7 +8,7 @@ const RouteTree = () => {
     return (
         <Routes>
             <Route path='/' element={<App/>}>
-                <Route path='/' element={<Dashboard/>}/>
+                <Route index element={<Dashboard/>}/>
             </Route>
             <Route path='/draw/:graphId' element={<DrawPanel/>}/>
         </Routes>
