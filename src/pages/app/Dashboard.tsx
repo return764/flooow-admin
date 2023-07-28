@@ -11,7 +11,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const {message} = App.useApp();
-    const emitter = useEmit('graph-list-change')
+    const {emit} = useEmit('graph-list-change')
 
     const handleOk = async () => {
         try {
@@ -20,7 +20,7 @@ function Dashboard() {
             await Api.graph.addGraph(form.getFieldsValue())
             setLoading(false)
             setOpen(false)
-            emitter()
+            emit()
             message.success("create graph successfully!")
         } catch (e) {
             if (e instanceof AxiosError) {
