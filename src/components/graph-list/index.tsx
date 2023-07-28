@@ -5,6 +5,7 @@ import {R} from "../../api/model";
 import GraphSummary = R.GraphSummary;
 import {useNavigate} from "react-router-dom";
 import useEmit from "../../hooks/useEmit";
+import {EmitterType} from "../../context/EmitterContext";
 
 interface GraphListProps {
 
@@ -14,7 +15,7 @@ const GraphList: React.FC<GraphListProps> = () => {
     const [list, setList] = useState<GraphSummary[]>();
     const navigate = useNavigate();
     const {message} = App.useApp()
-    const {emit, on, removeListener} = useEmit('graph-list-change')
+    const {emit, on, removeListener} = useEmit(EmitterType.GRAPH_LIST_CHANGE)
 
     function requestList() {
         API.graph.retrieveGraphList().then(r => {
@@ -38,7 +39,7 @@ const GraphList: React.FC<GraphListProps> = () => {
 
     const handleDeleteGraph = (graph: GraphSummary) => {
         return () => {
-            API.graph.deleteGraph(graph.id).then(r => {
+            API.graph.deleteGraph(graph.id).then(_ => {
                 message.success('delete graph success!')
                 emit()
             })

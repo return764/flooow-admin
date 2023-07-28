@@ -5,13 +5,14 @@ import Api from "../../api";
 import {Input} from "antd/lib";
 import {AxiosError} from "axios";
 import useEmit from "../../hooks/useEmit";
+import {EmitterType} from "../../context/EmitterContext";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const {message} = App.useApp();
-    const {emit} = useEmit('graph-list-change')
+    const {emit} = useEmit(EmitterType.GRAPH_LIST_CHANGE)
 
     const handleOk = async () => {
         try {

@@ -19,13 +19,15 @@ import useEmit from "../../hooks/useEmit";
 import ToolBar from "../../components/tool-bar";
 import ReturnType = R.ReturnType;
 import ActionStatus = R.ActionStatus;
+import {EmitterType} from "../../context/EmitterContext";
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
-    const socketConnectedEmitter = useEmit('socket-connected');
-    const executeEmitter = useEmit('graph-running')
+    const socketConnectedEmitter = useEmit(EmitterType.SOCKET_CONNECTED);
+    const executeEmitter = useEmit(EmitterType.GRAPH_RUNNING)
+    const actionSuccessEmitter = useEmit(EmitterType.ACTION_SUCCESS)
     const {message} = App.useApp()
     const params = useParams()
     const graphId = params.graphId!!
@@ -65,6 +67,9 @@ const DrawPanel = () => {
                 const status = res.headers["status"]
                 if (status === ActionStatus.VALIDATION_FAILED) {
                     message.warning(body)
+                }
+                if (status === ActionStatus.SUCCESS) {
+                    actionSuccessEmitter.emit()
                 }
                 cell?.setData({status})
             })

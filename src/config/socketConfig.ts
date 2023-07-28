@@ -32,6 +32,7 @@ class Socket {
             this.connecting = true
             this.sockJS = new SockJS(this.getFullUrl())
             this.client = Stomp.over(this.sockJS)
+            this.client.debug = () => {}
             this.client.connect({}, connectedCallbackWrapped, () => {
                 errorCallback && errorCallback()
                 this.retry(connectedCallbackWrapped, errorCallback)
