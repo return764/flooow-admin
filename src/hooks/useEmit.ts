@@ -11,8 +11,9 @@ const useEmit = <T>(name: string) => {
         emit: (event?: T) => {
             emit(name, event)
         },
-        on: (handler: EventHandler) => {
+        on: (handler: EventHandler): EventHandler => {
             on(name, handler)
+            return handler
         },
         removeListener: (handler: EventHandler) => {
             removeListener(name, handler)

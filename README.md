@@ -17,6 +17,7 @@ project: flooow
 - [X] support socket resubscribe
 - [ ] support preview one action result
 - [X] support show socket connection status
+- [ ] support see the graph execution progress
 
 ## Refactor
 - [X] combine Node&Edge creation logic

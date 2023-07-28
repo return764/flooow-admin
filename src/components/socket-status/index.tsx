@@ -8,14 +8,10 @@ const SocketStatus = () => {
     const [online, setOnline] = useState<boolean>(socket.isConnected());
     const socketConnectedEmitter = useEmit('socket-connected');
 
-    const onlineSocket = (status: boolean) => {
-        setOnline(status)
-    };
-
     useEffect(() => {
-        socketConnectedEmitter.on(onlineSocket)
+        const handler = socketConnectedEmitter.on((flag) => setOnline(flag))
         return () => {
-            socketConnectedEmitter.removeListener(onlineSocket)
+            socketConnectedEmitter.removeListener(handler)
         }
     }, [])
 

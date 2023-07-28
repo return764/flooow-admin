@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Cell, EdgeView, Graph, NodeView, Platform} from "@antv/x6";
 import {Scroller} from "@antv/x6-plugin-scroller";
 import Paper from "../../components/paper";
-import {App, Button, MenuProps, Space} from "antd";
+import {App, MenuProps} from "antd";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {Selection} from "@antv/x6-plugin-selection";
 import './index.css'
@@ -11,21 +11,21 @@ import socket from "../../config/socketConfig";
 import {R} from "../../api/model";
 import {EdgeModel, NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
-import ReturnType = R.ReturnType;
 import GraphContextProvider from "../../context/GraphContextProvider";
-import ActionStatus = R.ActionStatus;
 import {useParams} from "react-router-dom";
 import DndContainer from "../../components/dnd-container";
 import NodeOptionsContainer from "../../components/node-options-container";
-import SocketStatus from "../../components/socket-status";
 import useEmit from "../../hooks/useEmit";
+import ToolBar from "../../components/tool-bar";
+import ReturnType = R.ReturnType;
+import ActionStatus = R.ActionStatus;
 
 const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
-    const [executing, setExecuting] = useState(false);
     const socketConnectedEmitter = useEmit('socket-connected');
+    const executeEmitter = useEmit('graph-running')
     const {message} = App.useApp()
     const params = useParams()
     const graphId = params.graphId!!
@@ -51,7 +51,7 @@ const DrawPanel = () => {
                         addNodeModel(jsonBody)
                         break;
                     case ReturnType.EXECUTION:
-                        setExecuting(false)
+                        executeEmitter.emit(false)
                         break;
                     default:
                         break;
@@ -183,10 +183,6 @@ const DrawPanel = () => {
         }
     }, []);
 
-    const onCenterContent = () => {
-        graphRef.current!.centerContent()
-    }
-
     const onNodeMove = (e: NodeView.EventArgs['node:move']) => {
         e.node.setData({
             previousX: e.x,
@@ -234,29 +230,13 @@ const DrawPanel = () => {
         }
     }
 
-    const onExecute = () => {
-        graphRef.current!.getCells()
-            .map(it=> it.setData({status: "NEW"}))
-        setExecuting(true)
-        API.graph.execute(graphId).catch(() => {
-            setExecuting(false)
-        })
-
-    }
 
     return (
         <div style={{height: '100%', width: '100%'}}>
             <div id='draw-container' style={{height: '100%', width: '100%'}}> </div>
             {onReady && <DndContainer graph={graphRef.current!} />}
             {onReady && <NodeOptionsContainer graph={graphRef.current!} />}
-                <Paper id='tool-bar'>
-                    <Space>
-                        <Button onClick={onCenterContent}>画布居中</Button>
-                        <Button onClick={onExecute} loading={executing}>执行</Button>
-                        <Button onClick={onExecute}>保存</Button>
-                    </Space>
-                    <SocketStatus/>
-                </Paper>
+            {onReady && <ToolBar graph={graphRef.current!} />}
             <Paper id='minimap' style={{
                 position: 'fixed',
                 padding: '4px',

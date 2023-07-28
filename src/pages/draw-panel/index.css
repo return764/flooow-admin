@@ -31,15 +31,3 @@
     height: inherit;
     width: 1rem;
 }
-
-#tool-bar {
-    position: fixed;
-    padding: 4px;
-    left: calc(50vw - 250px);
-    top: 20px;
-    height: 36px;
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
