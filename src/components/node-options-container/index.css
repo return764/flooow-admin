@@ -1,8 +1,22 @@
-#node-options-container {
-    position: fixed;
-    padding: 8px;
-    height: 500px;
-    width: 280px;
-    right: 20px;
-    top: 20px;
+.node-options-container .ant-drawer-body {
+    padding: 1rem 1rem;
+    overflow: hidden;
+}
+
+.node-options-container .droppable-container {
+    background-color: aliceblue;
+    border-radius: 4px;
+    padding: .5rem;
+}
+
+.node-options-container .isDragging {
+    border: #3471f9 1px dashed;
+}
+
+.node-options-container .ant-form-item {
+    margin: 0;
+}
+
+.node-options-container .draggable-container + .draggable-container {
+    margin-top: 10px;
 }

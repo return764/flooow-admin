@@ -1,7 +1,6 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import Paper from "../paper";
 import {Graph, NodeView} from "@antv/x6";
-import {App, Button, Divider, Form, Input, Select} from "antd";
+import {App, Button, Divider, Drawer, Form, Input, Select} from "antd";
 import './index.css';
 import API from "../../api";
 import {R} from "../../api/model";
@@ -40,10 +39,8 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
 
     useEffect(() => {
         graph.on('node:click', openOptionsDrawer)
-        graph.on('blank:click', closeOptionsDrawer)
         return () => {
             graph.off('node:click', openOptionsDrawer)
-            graph.off('blank:click', closeOptionsDrawer)
         }
     }, [getNodeModelById])
 
@@ -79,6 +76,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
                 <Draggable key={`${it.label}-drag`} draggableId={it.label} index={index}>
                     {(provided, _) => (
                         <div
+                            className={'draggable-container'}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}>
@@ -99,6 +97,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
                 <Draggable key={`${it.label}-drag`} draggableId={it.label} index={index}>
                     {(provided, _) => (
                         <div
+                            className={'draggable-container'}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}>
@@ -156,41 +155,48 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     }
 
     return (
-        <Paper id='node-options-container'
-               hidden={!open}
+        <Drawer
+            title={nodeModel?.name}
+            className='node-options-container'
+            width={400}
+            open={open}
+            getContainer={false}
+            onClose={closeOptionsDrawer}
+            footer={<Button onClick={handleSubmit}>保存</Button>}
         >
-            <p>{nodeModel?.name}</p>
             <DragDropContext onDragEnd={handleDragEnd}>
                 {(!isEmpty(options) || !isEmpty(inputOptions)) && <Form
                   ref={formRef}
                   labelCol={{span: 8}}
                   initialValues={initialValue}
                   form={form}>
+                  <Divider plain={true}>
+                    Input From User Input
+                  </Divider>
                   <Droppable droppableId='basic'>
                       {(provided, snapshot) => (
                           <div ref={provided.innerRef}
-                               style={{backgroundColor: snapshot.isDraggingOver ? 'blue' : ''}}>
+                               className={`droppable-container ${snapshot.isDraggingOver && 'isDragging'}`}>
                               {renderDefaultOptions()}
                               {provided.placeholder}
                           </div>
                       )}
                   </Droppable>
                   <Divider plain={true}>
-                    Input From
+                    Input From Previous Action
                   </Divider>
                   <Droppable droppableId='input-from'>
                       {(provided, snapshot) => (
                           <div ref={provided.innerRef}
-                               style={{backgroundColor: snapshot.isDraggingOver ? 'blue' : ''}}>
+                               className={`droppable-container ${snapshot.isDraggingOver && 'isDragging'}`}>
                               {renderInputOptions()}
                               {provided.placeholder}
                           </div>
                       )}
                   </Droppable>
                 </Form>}
-                <Button onClick={handleSubmit}>保存</Button>
             </DragDropContext>
-        </Paper>
+        </Drawer>
     );
 }
 

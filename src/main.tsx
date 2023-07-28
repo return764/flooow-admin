@@ -1,4 +1,4 @@
-import React, {StrictMode} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {App as AppProvider} from 'antd'
 import './index.css'
@@ -8,13 +8,11 @@ import RouteTree from "./RouteTree";
 import EmitterContextProvider from "./context/EmitterContextProvider";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <StrictMode>
-        <AppProvider>
-            <EmitterContextProvider>
-                <BrowserRouter>
-                    <RouteTree />
-                </BrowserRouter>
-            </EmitterContextProvider>
-        </AppProvider>
-    </StrictMode>,
+    <AppProvider>
+        <EmitterContextProvider>
+            <BrowserRouter>
+                <RouteTree/>
+            </BrowserRouter>
+        </EmitterContextProvider>
+    </AppProvider>,
 )
