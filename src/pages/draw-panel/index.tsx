@@ -22,6 +22,7 @@ const DrawPanel = () => {
     const graphRef = useRef<Graph>();
     const [onReady, setOnReady] = useState(false);
     const {initGraphData, addNodeModel} = useContext(GraphContext);
+    const [executing, setExecuting] = useState(false);
     const {message} = App.useApp()
     const params = useParams()
     const graphId = params.graphId!!
@@ -45,6 +46,9 @@ const DrawPanel = () => {
                 switch (res.headers["return-type"]) {
                     case ReturnType.CREATE_NODE:
                         addNodeModel(jsonBody)
+                        break;
+                    case ReturnType.EXECUTION:
+                        setExecuting(false)
                         break;
                     default:
                         break;
@@ -227,7 +231,9 @@ const DrawPanel = () => {
     const onExecute = () => {
         graphRef.current!.getCells()
             .map(it=> it.setData({status: "NEW"}))
+        setExecuting(true)
         API.graph.execute(graphId)
+
     }
 
     return (
@@ -238,7 +244,7 @@ const DrawPanel = () => {
             <Paper id='tool-bar'>
                 <Space>
                     <Button onClick={onCenterContent}>画布居中</Button>
-                    <Button onClick={onExecute}>执行</Button>
+                    <Button onClick={onExecute} loading={executing}>执行</Button>
                     <Button onClick={onExecute}>保存</Button>
                 </Space>
             </Paper>
