@@ -37,6 +37,11 @@ export function deleteGraph(graphId: string) {
     return axiosInstance.delete(`/graphs/${graphId}`)
 }
 
+export const execute = (graphId: string) => {
+    return axiosInstance.post(`/graphs/${graphId}/execution`)
+}
+
+
 export const deleteEdge = (graphId: string, id: string) => {
     socket.send(`/app/graph/${graphId}/edge/delete`, id)
 };
@@ -46,18 +51,13 @@ export const deleteNode = (graphId: string, id: string) => {
     socket.send(`/app/graph/${graphId}/node/delete`, id)
 };
 
-
 export const addEdge = (graphId: string, edge: EdgeModel) => {
     socket.send(`/app/graph/${graphId}/edge/create`, edge)
 }
-
 export const addNode = (graphId: string, node: NodeModel) => {
     socket.send(`/app/graph/${graphId}/node/create`, node)
 }
+
 export const moveNode = (graphId: string, moveEvent: R.MoveNodeEvent) => {
     socket.send(`/app/graph/${graphId}/node/move`, moveEvent)
-}
-
-export const execute = (graphId: string) => {
-    socket.send(`/app/graph/${graphId}/execution`)
 }

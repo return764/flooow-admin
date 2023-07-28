@@ -232,7 +232,9 @@ const DrawPanel = () => {
         graphRef.current!.getCells()
             .map(it=> it.setData({status: "NEW"}))
         setExecuting(true)
-        API.graph.execute(graphId)
+        API.graph.execute(graphId).catch(() => {
+            setExecuting(false)
+        })
 
     }
 
