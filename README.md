@@ -1,6 +1,9 @@
 project: flooow
 
 
+## Tech
+- [ ] add unit test for code
+
 ## Process
 - [X] support logic for node&edge deletion
 - [X] showing action running status
@@ -17,6 +20,7 @@ project: flooow
 ## Refactor
 - [X] combine Node&Edge creation logic
 - [X] refactor DrawPanel component, split register logic to others file
+- [ ] use Drawer instead of NodeOptionsContainer
 
 
 ## Bug
