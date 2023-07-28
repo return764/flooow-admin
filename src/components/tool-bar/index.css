@@ -1,11 +1,20 @@
-#tool-bar {
+.tool-bar-wrapper {
     position: fixed;
-    padding: 4px;
     left: calc(50vw - 250px);
     top: 20px;
     height: 36px;
     width: 500px;
+}
+
+.tool-bar-wrapper .tool-bar {
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.tool-bar-wrapper .execution-progress {
+    position: absolute;
+    bottom: -20px;
+    z-index: -1;
 }
