@@ -25,8 +25,8 @@ const ToolBar: React.FC<ToolBarProps> = ({graph}) => {
     useEffect(() => {
         const handler = executeEmitter.on((flag) => setExecuting(flag))
         const handler1 = actionSuccessEmitter.on(() => {
-            const actionCount = graph.getNodes().length
-            setPercent(p => ((p+1) / actionCount * 100))
+            const actionPercent = 100 / graph.getNodes().length
+            setPercent(p => p + actionPercent)
         })
         const handler2 = socketConnectedEmitter.on((flag) => setOnline(flag))
         return () => {
