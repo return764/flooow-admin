@@ -8,19 +8,60 @@ import FormItem from "antd/es/form/FormItem";
 import {useForm} from "antd/es/form/Form";
 import {DragDropContext, Draggable, Droppable, OnDragEndResponder} from 'react-beautiful-dnd';
 import {clone, isEmpty} from "lodash";
-import OptionInputType = R.OptionInputType;
 import {NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
-import {DefaultOptionType} from "rc-select/lib/Select";
+import OptionInputType = R.OptionInputType;
 
 type NodeOptionsContainerProps = {
     graph: Graph
 }
 
+type OptionFormItemProps = {
+    it: R.ActionOption
+    nodeModel: NodeModel,
+    graph: Graph,
+}
+
+const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
+    const {getNodeModelById} = useContext(GraphContext)
+
+    if (it.inputType === OptionInputType.LAST_OUTPUT) {
+        const incomingNodes = graph.getNeighbors(graph.getCellById(nodeModel.id!!), {incoming: true})
+        const selectOptions = incomingNodes
+            .map(it => getNodeModelById(it.id))
+            .map(it => ({
+                label: it?.name,
+                value: it?.id
+            }))
+
+        return (
+            <FormItem
+                rules={[
+                    {
+                        validator: async (_, value) => {
+                            if (!selectOptions.map(it => it.value).includes(value)) {
+                                throw new Error("please select existing node")
+                            }
+                        }
+                    }
+                ]}
+                key={it.label} name={it.label} label={it.label}>
+                <Select options={selectOptions}/>
+            </FormItem>
+        )
+    }
+
+    return (
+        <FormItem
+            key={it.label} name={it.label} label={it.label}>
+            <Input value={it.value}/>
+        </FormItem>
+    )
+}
+
 function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const {graph} = props;
     const [open, setOpen] = useState(false)
-    const [selectOptions, setSelectOptions] = useState<DefaultOptionType[]>([])
     const [options, setOptions] = useState<R.ActionOption[]>([])
     const [nodeModel, setNodeModel] = useState<NodeModel>()
     const {getNodeModelById} = useContext(GraphContext)
@@ -44,21 +85,13 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
         }
     }, [getNodeModelById])
 
-    const openOptionsDrawer = useCallback((pop: NodeView.EventArgs['node:click']) => {
+    const openOptionsDrawer = useCallback(async (pop: NodeView.EventArgs['node:click']) => {
         setNodeModel(getNodeModelById(pop.node.id))
         setOptions([])
-        API.graph.retrieveActionOptions(pop.node.id)
-            .then(r => {
-                const incomingNodes = graph.getNeighbors(pop.cell, {incoming: true})
-                setSelectOptions(incomingNodes
-                    .map(it => getNodeModelById(it.id))
-                    .map(it => ({
-                        label: it?.name,
-                        value: it?.id
-                    })))
-                setOptions(r.data)
-                setOpen(true)
-            })
+        const { data } = await API.graph.retrieveActionOptions(pop.node.id)
+        setOptions(data)
+        setOpen(true)
+
     }, [getNodeModelById]);
     const closeOptionsDrawer = () => {
         setOpen(false);
@@ -72,52 +105,29 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
 
     const renderDefaultOptions = () => {
         return defaultOptions.map((it, index) => {
-            return (
-                <Draggable key={`${it.label}-drag`} draggableId={it.label} index={index}>
-                    {(provided, _) => (
-                        <div
-                            className={'draggable-container'}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}>
-                            <FormItem
-                                key={it.label} name={it.label} label={it.label}>
-                                <Input value={it.value}/>
-                            </FormItem>
-                        </div>
-                    )}
-                </Draggable>
-            )
+            return renderDraggableOption(it, index)
         })
+    }
+
+    function renderDraggableOption(it: R.ActionOption, index: number) {
+        return (
+            <Draggable key={`${it.label}-drag`} draggableId={it.label} index={index}>
+                {(provided, _) => (
+                    <div
+                        className={'draggable-container'}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}>
+                        <OptionFormItem it={it} nodeModel={nodeModel!!} graph={graph}/>
+                    </div>
+                )}
+            </Draggable>
+        );
     }
 
     const renderInputOptions = () => {
         return inputOptions.map((it, index) => {
-            return (
-                <Draggable key={`${it.label}-drag`} draggableId={it.label} index={index}>
-                    {(provided, _) => (
-                        <div
-                            className={'draggable-container'}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}>
-                            <FormItem
-                                rules={[
-                                    {
-                                        validator: async (_, value) => {
-                                            if (!selectOptions.map(it => it.value).includes(value)) {
-                                                throw new Error("please select existing node")
-                                            }
-                                        }
-                                    }
-                                ]}
-                                key={it.label} name={it.label} label={it.label}>
-                                <Select options={selectOptions}/>
-                            </FormItem>
-                        </div>
-                    )}
-                </Draggable>
-            )
+            return renderDraggableOption(it, index)
         })
     }
 
@@ -140,7 +150,6 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
             setOptions((_) => {
                 const arr = clone(defaultOptions)
                 arr[source.index].inputType = OptionInputType.LAST_OUTPUT
-                form.setFieldValue(arr[source.index].label, selectOptions[0]?.value ?? '')
                 return [...arr, ...inputOptions]
             })
         }
@@ -148,7 +157,6 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
             setOptions((_) => {
                 const arr = clone(inputOptions)
                 arr[source.index].inputType = OptionInputType.DEFAULT
-                form.setFieldValue(arr[source.index].label, '')
                 return [...arr, ...defaultOptions]
             })
         }
