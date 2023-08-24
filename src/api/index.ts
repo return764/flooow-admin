@@ -1,8 +1,11 @@
 import * as graph from './graph'
+import * as node from './node'
+
 
 
 const API = {
-    graph
+    graph,
+    node
 }
 
 export default API

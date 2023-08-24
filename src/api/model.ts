@@ -27,9 +27,15 @@ export namespace R {
 
     export interface ActionOption {
         label: string,
-        type: string,
+        type: OptionType,
         inputType: OptionInputType,
+        javaType: string,
         value: any
+    }
+
+    export interface Option {
+        label: string,
+        value: string
     }
 
     export interface ActionOptionForm {
@@ -43,6 +49,12 @@ export namespace R {
     export enum OptionInputType {
         DEFAULT = 'DEFAULT',
         LAST_OUTPUT = 'LAST_OUTPUT'
+    }
+
+    export enum OptionType {
+        STRING = 'STRING',
+        MAP = 'MAP',
+        ENUM = 'ENUM'
     }
 
     export enum ReturnType {

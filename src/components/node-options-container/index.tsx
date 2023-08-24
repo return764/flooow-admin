@@ -11,6 +11,8 @@ import {clone, isEmpty} from "lodash";
 import {NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
 import OptionInputType = R.OptionInputType;
+import OptionType = R.OptionType;
+import Option = R.Option;
 
 type NodeOptionsContainerProps = {
     graph: Graph
@@ -64,6 +66,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<R.ActionOption[]>([])
     const [nodeModel, setNodeModel] = useState<NodeModel>()
+    const [enumOptions, setEnumOptions] = useState<Map<string, Option[]>>()
     const {getNodeModelById} = useContext(GraphContext)
     const {message} = App.useApp()
     const formRef = useRef(null)
@@ -88,10 +91,16 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const openOptionsDrawer = useCallback(async (pop: NodeView.EventArgs['node:click']) => {
         setNodeModel(getNodeModelById(pop.node.id))
         setOptions([])
-        const { data } = await API.graph.retrieveActionOptions(pop.node.id)
+        const { data } = await API.node.retrieveActionOptions(pop.node.id)
+        const map = new Map<string, Option[]>()
+        const enumData = data.filter(it => it.type === OptionType.ENUM)
+        for (const it of enumData) {
+            const {data} = await API.node.retrieveEnumOptions(it.javaType)
+            map.set(it.javaType, data)
+        }
+        setEnumOptions(map)
         setOptions(data)
         setOpen(true)
-
     }, [getNodeModelById]);
     const closeOptionsDrawer = () => {
         setOpen(false);
@@ -139,7 +148,7 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
                 it.value = formValue[it.label]
                 return it
             })
-            API.graph.updateActionOptions(nodeModel?.id!!, {data: formOptions})
+            API.node.updateActionOptions(nodeModel?.id!!, {data: formOptions})
                 .then(() => message.success("success"))
         } catch (e) { }
     }
