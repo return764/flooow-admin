@@ -11,8 +11,8 @@ import {clone, isEmpty} from "lodash";
 import {NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
 import OptionInputType = R.OptionInputType;
-import OptionType = R.OptionType;
 import Option = R.Option;
+import OptionType = R.OptionType;
 
 type NodeOptionsContainerProps = {
     graph: Graph
@@ -26,6 +26,13 @@ type OptionFormItemProps = {
 
 const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
     const {getNodeModelById} = useContext(GraphContext)
+    const [enumOptions, setEnumOptions] = useState<Option[]>([])
+
+    const handleFetchEnumOptions = () => {
+        API.node.retrieveEnumOptions(it.javaType).then(r => {
+            setEnumOptions(r.data)
+        })
+    }
 
     if (it.inputType === OptionInputType.LAST_OUTPUT) {
         const incomingNodes = graph.getNeighbors(graph.getCellById(nodeModel.id!!), {incoming: true})
@@ -53,6 +60,24 @@ const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
         )
     }
 
+    if (it.type === OptionType.ENUM) {
+        return (
+            <FormItem
+                rules={[
+                    {
+                        validator: async (_, value) => {
+                            if (!enumOptions.map(it => it.value).includes(value)) {
+                                throw new Error("please select existing node")
+                            }
+                        }
+                    }
+                ]}
+                key={it.label} name={it.label} label={it.label}>
+                <Select onFocus={handleFetchEnumOptions} options={enumOptions}/>
+            </FormItem>
+        )
+    }
+
     return (
         <FormItem
             key={it.label} name={it.label} label={it.label}>
@@ -66,7 +91,6 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<R.ActionOption[]>([])
     const [nodeModel, setNodeModel] = useState<NodeModel>()
-    const [enumOptions, setEnumOptions] = useState<Map<string, Option[]>>()
     const {getNodeModelById} = useContext(GraphContext)
     const {message} = App.useApp()
     const formRef = useRef(null)
@@ -92,13 +116,6 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
         setNodeModel(getNodeModelById(pop.node.id))
         setOptions([])
         const { data } = await API.node.retrieveActionOptions(pop.node.id)
-        const map = new Map<string, Option[]>()
-        const enumData = data.filter(it => it.type === OptionType.ENUM)
-        for (const it of enumData) {
-            const {data} = await API.node.retrieveEnumOptions(it.javaType)
-            map.set(it.javaType, data)
-        }
-        setEnumOptions(map)
         setOptions(data)
         setOpen(true)
     }, [getNodeModelById]);
