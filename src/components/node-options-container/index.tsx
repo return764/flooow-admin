@@ -1,18 +1,24 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Graph, NodeView} from "@antv/x6";
-import {App, Button, Divider, Drawer, Form, Input, Select} from "antd";
+import {Graph, KeyValue, NodeView} from "@antv/x6";
+import {App, Button, Divider, Drawer, Form, Input, Select, Space} from "antd";
 import './index.css';
 import API from "../../api";
 import {R} from "../../api/model";
 import FormItem from "antd/es/form/FormItem";
 import {useForm} from "antd/es/form/Form";
 import {DragDropContext, Draggable, Droppable, OnDragEndResponder} from 'react-beautiful-dnd';
-import {clone, isEmpty} from "lodash";
+import {clone, isEmpty, map} from "lodash";
 import {NodeModel} from "../../@types/x6";
 import {GraphContext} from "../../context/GraphContext";
+import {CloseOutlined} from "@ant-design/icons";
 import OptionInputType = R.OptionInputType;
 import Option = R.Option;
 import OptionType = R.OptionType;
+
+type KeyValueObject = {
+    key: string,
+    value: string
+}
 
 type NodeOptionsContainerProps = {
     graph: Graph
@@ -27,6 +33,13 @@ type OptionFormItemProps = {
 const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
     const {getNodeModelById} = useContext(GraphContext)
     const [enumOptions, setEnumOptions] = useState<Option[]>([])
+    const [listPair, setListPair] = useState([]);
+
+    useEffect(() => {
+        if (it.type === OptionType.ENUM) {
+            handleFetchEnumOptions()
+        }
+    }, [])
 
     const handleFetchEnumOptions = () => {
         API.node.retrieveEnumOptions(it.id).then(r => {
@@ -73,7 +86,38 @@ const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
                     }
                 ]}
                 key={it.label} name={it.label} label={it.label}>
-                <Select onFocus={handleFetchEnumOptions} options={enumOptions}/>
+                <Select options={enumOptions}/>
+            </FormItem>
+        )
+    }
+
+    if (it.type === OptionType.MAP) {
+        return (
+            <FormItem label={it.label}>
+                <Form.List name={it.label}>
+                    {(subFields, subOpt) => (
+                        <div style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}>
+                            {subFields.map((subField) => (
+                                <Space key={subField.key}>
+                                    <Form.Item noStyle name={[subField.name, 'key']}>
+                                        <Input placeholder="key" />
+                                    </Form.Item>
+                                    <Form.Item noStyle name={[subField.name, 'value']}>
+                                        <Input placeholder="value" />
+                                    </Form.Item>
+                                    <CloseOutlined
+                                        onClick={() => {
+                                            subOpt.remove(subField.name);
+                                        }}
+                                    />
+                                </Space>
+                            ))}
+                            <Button type="dashed" onClick={() => subOpt.add()} block>
+                                + Add
+                            </Button>
+                        </div>
+                    )}
+                </Form.List>
             </FormItem>
         )
     }
@@ -99,6 +143,13 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     const inputOptions = useMemo(() => options.filter(it => it.inputType === OptionInputType.LAST_OUTPUT), [options])
     const defaultOptions = useMemo(() => options.filter(it => it.inputType === OptionInputType.DEFAULT), [options])
     const initialValue = useMemo(() => options?.reduce((previous, current) => {
+        if (current.type == OptionType.MAP) {
+            return {
+                ...previous,
+                [current.label]: map((current.value as KeyValue), (key, value) => ({key, value}))
+            }
+        }
+
         return {
             ...previous,
             [current.label]: current.value
@@ -158,11 +209,19 @@ function NodeOptionsContainer(props: NodeOptionsContainerProps) {
     }
 
     const handleSubmit = async () => {
+        console.log(form.getFieldsValue())
         try {
             await form.validateFields()
             let formValue = form.getFieldsValue();
             const formOptions = clone(options).map(it => {
                 it.value = formValue[it.label]
+                if (it.type == OptionType.MAP) {
+                    it.value = (formValue[it.label] as KeyValueObject[]).reduce((acc, item) => {
+                        acc[item.key] = item.value;
+                        return acc;
+                    }, {} as KeyValue)
+                    console.log(it.value)
+                }
                 return it
             })
             API.node.updateActionOptions(nodeModel?.id!!, {data: formOptions})
