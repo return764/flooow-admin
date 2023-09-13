@@ -26,10 +26,10 @@ export namespace R {
     }
 
     export interface ActionOption {
+        id: string,
         label: string,
         type: OptionType,
         inputType: OptionInputType,
-        javaType: string,
         value: any
     }
 

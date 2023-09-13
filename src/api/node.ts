@@ -4,10 +4,10 @@ import axiosInstance from "../config/axiosConfig";
 import ActionOption = R.ActionOption;
 import ActionOptionForm = R.ActionOptionForm;
 
-export const retrieveEnumOptions = (javaType: string) => {
+export const retrieveEnumOptions = (id: string) => {
     return axiosInstance.get("/nodes/enumOptions", {
         params: {
-            javaType: javaType
+            id: id
         }
     })
 };

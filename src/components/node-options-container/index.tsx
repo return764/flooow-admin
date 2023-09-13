@@ -29,7 +29,7 @@ const OptionFormItem = ({it, nodeModel, graph}: OptionFormItemProps) => {
     const [enumOptions, setEnumOptions] = useState<Option[]>([])
 
     const handleFetchEnumOptions = () => {
-        API.node.retrieveEnumOptions(it.javaType).then(r => {
+        API.node.retrieveEnumOptions(it.id).then(r => {
             setEnumOptions(r.data)
         })
     }
