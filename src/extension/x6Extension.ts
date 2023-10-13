@@ -4,6 +4,7 @@ import InputShape from "../shapes/base/InputShape";
 import ProcessShape from "../shapes/base/PorcessShape";
 import OutputShape from "../shapes/base/OutputShape";
 import ContextMenuTool from "../components/context-menu-tool";
+import ActionSummaryShape from "../shapes/base/ActionSummaryShape";
 
 Cell.prototype.toRequestData = function () {
     if (this.isNode()) {
@@ -110,6 +111,13 @@ register({
             }
         },
     },
+})
+
+register({
+    shape: 'action-summary',
+    width: 180,
+    height: 36,
+    component: ActionSummaryShape,
 })
 
 Graph.registerConnector(

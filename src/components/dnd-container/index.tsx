@@ -69,7 +69,10 @@ const DndContainer: FC<DndContainerProps> = props => {
         dndContainer.appendChild(stencil.container);
         API.graph.retrieveAllTemplates().then(res => {
             if (res.data) {
-                stencil.load(res.data.map(it => graph.createNode(it)))
+                stencil.load(res.data.map(it => graph.createNode({
+                    shape: 'action-summary',
+                    data: it
+                })))
             }
         })
         return () => {

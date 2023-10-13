@@ -29,8 +29,8 @@ export namespace R {
         id: string,
         label: string,
         type: OptionType,
-        inputType: OptionInputType,
-        value: any
+        typeValue: Option,
+        valueType: OptionValueType,
     }
 
     export interface Option {
@@ -51,10 +51,15 @@ export namespace R {
         LAST_OUTPUT = 'LAST_OUTPUT'
     }
 
-    export enum OptionType {
+    export enum OptionValueType {
         STRING = 'STRING',
         MAP = 'MAP',
         ENUM = 'ENUM'
+    }
+
+    export enum OptionType {
+        INPUT = 'INPUT',
+        OUTPUT = 'OUTPUT'
     }
 
     export enum ReturnType {
