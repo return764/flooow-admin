@@ -59,9 +59,10 @@ const DndContainer: FC<DndContainerProps> = props => {
             stencilGraphWidth: 200,
             layoutOptions: {
                 columns: 1,
-                dy: 20,
-                dx: 40,
-                rowHeight: 'compact'
+                marginY: 25,
+                marginX: 45,
+                center: true,
+                rowHeight: 'auto'
             },
             getDragNode: onDragNode,
         });
