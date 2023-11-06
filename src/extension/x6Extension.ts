@@ -5,6 +5,7 @@ import ProcessShape from "../shapes/base/PorcessShape";
 import OutputShape from "../shapes/base/OutputShape";
 import ContextMenuTool from "../components/context-menu-tool";
 import ActionSummaryShape from "../shapes/base/ActionSummaryShape";
+import ActionDetailShape from "../shapes/base/ActionDetailShape";
 
 Cell.prototype.toRequestData = function () {
     if (this.isNode()) {
@@ -118,6 +119,94 @@ register({
     width: 180,
     height: 36,
     component: ActionSummaryShape,
+})
+
+register({
+    shape: 'action-detail',
+    component: ActionDetailShape,
+    width: 180,
+    height: 36,
+    ports: {
+        groups: {
+            connectorIn: {
+                position: {
+                    name: "absolute",
+                    args: {
+                        x: 0,
+                        y: 20,
+                    }
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        strokeWidth: 1,
+                        fill: '#fff',
+                        stroke: '#85A5FF',
+                    },
+                },
+            },
+            connectorOut: {
+                position: {
+                    name: "absolute",
+                    args: {
+                        x: '100%',
+                        y: 20,
+                    }
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        strokeWidth: 1,
+                        fill: '#fff',
+                        stroke: '#85A5FF',
+                    },
+                },
+            },
+            in: {
+                position: {
+                    name: 'absolute',
+                    args: {
+                        x: 0,
+                        y: 0,
+                    }
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        strokeWidth: 1,
+                        fill: '#fff',
+                        stroke: '#85A5FF',
+                    },
+                },
+            },
+            out: {
+                position: {
+                    name: 'absolute',
+                    args: {
+                        x: '100%',
+                        y: 0,
+                    }
+                },
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        strokeWidth: 1,
+                        fill: '#fff',
+                        stroke: '#85A5FF',
+                    },
+                },
+            },
+        },
+        items: [{
+            group: 'connectorIn'
+        },{
+            group: 'connectorOut'
+        }]
+    }
 })
 
 Graph.registerConnector(

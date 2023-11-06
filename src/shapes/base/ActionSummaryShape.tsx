@@ -11,11 +11,13 @@ const ActionSummaryShape = (props: {
     const {label} = node.getData<ActionData>()
 
     return (
-        <div className='process-main-area'>
-            <div className='process-node-type-icon'>
-                <img src={functionSvg} style={{ margin: '12px',padding: '4px', borderRadius: '4px', backgroundColor: '#0958d9' }} height={'12px'} alt='function'/>
+        <div className='shape-wrapper'>
+            <div className='shape-main-area'>
+                <div className='shape-node-type-icon'>
+                    <img src={functionSvg} style={{ margin: '12px',padding: '4px', borderRadius: '4px', backgroundColor: '#0958d9' }} height={'12px'} alt='function'/>
+                </div>
+                <div className='shape-node-label'>{label}</div>
             </div>
-            <div className='process-node-label'>{label}</div>
         </div>
     )
 };

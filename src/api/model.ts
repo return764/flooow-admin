@@ -27,9 +27,9 @@ export namespace R {
 
     export interface ActionOption {
         id: string,
-        label: string,
+        name: string,
         type: OptionType,
-        typeValue: Option,
+        defaultValue: string,
         valueType: OptionValueType,
     }
 

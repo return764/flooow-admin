@@ -18,6 +18,7 @@ project: flooow
 - [ ] support preview one action result
 - [X] support show socket connection status
 - [ ] support see the graph execution progress
+- [ ] support action detail node style
 
 ## Refactor
 - [X] combine Node&Edge creation logic

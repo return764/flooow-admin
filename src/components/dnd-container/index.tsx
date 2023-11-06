@@ -3,8 +3,10 @@ import {Graph, Node} from "@antv/x6";
 import './index.css';
 import CollapsePaper from "../collapse-paper";
 import {Stencil} from "@antv/x6-plugin-stencil";
-import {RectType} from "../../shapes/interface";
+import {ActionData, RectType} from "../../shapes/interface";
 import API from "../../api";
+import {R} from "../../api/model";
+import OptionType = R.OptionType;
 
 interface DndContainerProps {
     graph: Graph,
@@ -43,10 +45,39 @@ const calculatePorts = (type: RectType, nodeId: string) => {
 const DndContainer: FC<DndContainerProps> = props => {
     const { graph } = props;
 
+    function calculatePortY(index: number) {
+        return (30 * index) + 44 + 15;
+    }
+
     const onDragNode = (node: Node) => {
-        const cloneNode = node.clone();
-        cloneNode.addPorts(calculatePorts(cloneNode.data.type, cloneNode.id))
-        return cloneNode;
+        const newNode = graph.createNode({
+            shape: 'action-detail',
+            data: node.data
+        });
+
+        const {options} = node.getData<ActionData>()
+
+        const inputOptions = options.filter(it => it.type === OptionType.INPUT);
+        const outputOptions = options.filter(it => it.type === OptionType.OUTPUT);
+        outputOptions.forEach((_, index) => {
+            newNode.addPort({
+                group: 'out',
+                args: {
+                    y: calculatePortY(index)
+                }
+            })
+        })
+
+        inputOptions.forEach((_, index) => {
+            newNode.addPort({
+                group: 'in',
+                args: {
+                    y: calculatePortY(index)
+                }
+            })
+        })
+
+        return newNode;
     }
 
     useEffect(() => {
@@ -59,7 +90,8 @@ const DndContainer: FC<DndContainerProps> = props => {
             stencilGraphWidth: 200,
             layoutOptions: {
                 columns: 1,
-                marginY: 25,
+                marginY: 10,
+                dy: 20,
                 marginX: 45,
                 center: true,
                 rowHeight: 'auto'

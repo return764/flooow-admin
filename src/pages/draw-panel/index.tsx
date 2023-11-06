@@ -115,13 +115,35 @@ const DrawPanel = () => {
             background: {
                 color: "#F2F7FA",
             },
+            highlighting: {
+                magnetAvailable: {
+                    name: 'stroke',
+                    args: {
+                        attrs: {
+                            fill: '#fff',
+                            stroke: '#A4DEB1',
+                            strokeWidth: 4,
+                        },
+                    },
+                },
+                magnetAdsorbed: {
+                    name: 'stroke',
+                    args: {
+                        attrs: {
+                            fill: '#fff',
+                            stroke: '#31d0c6',
+                            strokeWidth: 4,
+                        },
+                    },
+                },
+            },
             connecting: {
                 snap: true,
                 allowEdge: false,
                 allowBlank: false,
                 allowNode: false,
                 allowLoop: false,
-                allowMulti: false,
+                allowMulti: true,
                 highlight: true,
                 sourceAnchor: {
                     name: 'left',
@@ -141,12 +163,31 @@ const DrawPanel = () => {
                         zIndex: -1,
                     })
                 },
-                validateConnection({ sourceMagnet, targetMagnet }) {
-                    if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
-                        return false;
+                validateMagnet({ magnet }) {
+                    return !(magnet.getAttribute('port-group') === 'in' || magnet.getAttribute('port-group') === 'connectorIn');
+                },
+                validateConnection({
+                   sourceCell,
+                   targetCell,
+                   sourceMagnet,
+                   targetMagnet,
+                   }) {
+                    // 不能连接自身
+                    if (sourceCell === targetCell) {
+                        return false
                     }
-                    return !(!targetMagnet || targetMagnet.getAttribute('port-group') !== 'in');
+                    // port必须存在
+                    if (!sourceMagnet || !targetMagnet) {
+                        return false
+                    }
 
+                    const sourcePortGroup = sourceMagnet.getAttribute('port-group')
+                    const targetPortGroup = targetMagnet.getAttribute('port-group')
+                    if ((sourcePortGroup === 'connectorOut' && targetPortGroup !== 'connectorIn') || (sourcePortGroup === 'out' && targetPortGroup !== 'in')) {
+                        return false
+                    }
+
+                    return true
                 },
             }
         });
